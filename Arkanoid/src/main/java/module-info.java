@@ -11,6 +11,12 @@ module org.example.arkanoid {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens org.example.arkanoid to javafx.fxml;
-    exports org.example.arkanoid;
+    opens org.example.arkanoid.main to javafx.fxml;
+    exports org.example.arkanoid.main;
+
+    opens org.example.arkanoid.object to javafx.fxml;
+    exports org.example.arkanoid.object;
+
+    opens org.example.arkanoid.control to javafx.fxml;
+    exports org.example.arkanoid.control;
 }
