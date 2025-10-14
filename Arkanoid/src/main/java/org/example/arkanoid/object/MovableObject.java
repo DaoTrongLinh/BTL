@@ -1,8 +1,14 @@
 package org.example.arkanoid.object;
 
 public class MovableObject extends GameObject {
-    private int dx;
-    private int dy;
+    protected int dx;
+    protected int dy;
+
+    @Override
+    public void update() {
+        x += dx;
+        y += dy;
+    }
 
     public void move(){}
 }
