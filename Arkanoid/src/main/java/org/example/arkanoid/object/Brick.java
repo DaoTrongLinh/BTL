@@ -1,7 +1,5 @@
 package org.example.arkanoid.object;
 
-import java.awt.*;
-
 public class Brick {
     private int x, y, width, height;
 
@@ -12,29 +10,12 @@ public class Brick {
         this.height = height;
     }
 
-    public void draw(Graphics g) {
-        g.setColor(Color.ORANGE);
-        g.fillRect(x, y, width, height);
-        g.setColor(Color.BLACK);
-        g.drawRect(x, y, width, height);
-    }
-
-    // ✅ Các getter để Ball và Renderer sử dụng
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
+    // getters
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
 }
+
 
 
