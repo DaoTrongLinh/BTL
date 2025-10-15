@@ -1,25 +1,41 @@
 package org.example.arkanoid.control;
 
 import javafx.scene.Group;
-import org.example.arkanoid.object.GameObject;
-import org.example.arkanoid.object.Ball;
-import org.example.arkanoid.object.Paddle;
-
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import org.example.arkanoid.object.*;
 
 public class Renderer {
-    private Group root;
+    private final Group root;
 
     public Renderer(Group root) {
         this.root = root;
     }
 
-    public void draw(GameObject object) {
-        if (object instanceof Ball ball) {
-            root.getChildren().add(ball.getShape());
-        } else if (object instanceof Paddle paddle) {
-            root.getChildren().add(paddle.getShape());
-        }
-        // Có thể thêm xử lý cho Brick, Paddle, v.v.
-    }
+    public void render(GameManager gm) {
+        root.getChildren().clear();
 
+        Ball ball = gm.getBall();
+        Paddle paddle = gm.getPaddle();
+
+        // Bóng
+        Circle circle = new Circle(ball.getX(), ball.getY(), ball.getRadius(), Color.RED);
+        root.getChildren().add(circle);
+
+        // Paddle
+        Rectangle paddleRect = new Rectangle(paddle.getX(), paddle.getY(), paddle.getWidth(), paddle.getHeight());
+        paddleRect.setFill(Color.BLUE);
+        root.getChildren().add(paddleRect);
+
+        // Gạch
+        for (Brick brick : gm.getBricks()) {
+            Rectangle rect = new Rectangle(brick.getX(), brick.getY(), brick.getWidth(), brick.getHeight());
+            rect.setFill(Color.ORANGE);
+            rect.setStroke(Color.BLACK);
+            root.getChildren().add(rect);
+        }
+    }
 }
+
+

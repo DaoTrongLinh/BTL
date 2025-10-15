@@ -1,58 +1,40 @@
 package org.example.arkanoid.object;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+public class Paddle {
+    private int x, y, width, height;
+    private int speed = 6;
 
-public class Paddle extends MovableObject {
-    private int speed;
-    private int currentPowerUp;
-    private Rectangle shape;
-
-    public Paddle(int x, int y, int width, int height, int speed) {
+    public Paddle(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.speed = speed;
-        this.currentPowerUp = 0;
-
-        shape = new Rectangle(width, height, Color.BLUE);
-        shape.setTranslateX(x);
-        shape.setTranslateY(y);
     }
 
-    public Rectangle getShape() {
-        return shape;
+    public void moveLeft() {
+        x = Math.max(0, x - speed);
     }
 
-    public void moveLeft(){
-        if (x > 0) {
-            x -= speed;
-            shape.setTranslateX(x);
-        }
+    public void moveRight() {
+        x = Math.min(800 - width, x + speed); // Giới hạn trong khung 800px
     }
 
-    public void moveRight(){
-        if (x + width < 800) {
-            x += speed;
-            shape.setTranslateX(x);
-        }
+    // ✅ Getter cho Renderer và Ball sử dụng
+    public int getX() {
+        return x;
     }
 
-    public void applyPowerUp(){
-        if (currentPowerUp == 1) {
-            width += 30;
-            shape.setWidth(width);
-        }
-        // Có thể thêm nhiều loại power up khác
+    public int getY() {
+        return y;
     }
 
-    @Override
-    public void update() {
-        // Có thể thêm điều khiển bằng phím sau
-        shape.setTranslateX(x);
-        shape.setTranslateY(y);
+    public int getWidth() {
+        return width;
     }
-    @Override
-    public void render() {}
+
+    public int getHeight() {
+        return height;
+    }
 }
+
+
