@@ -1,12 +1,13 @@
 package org.example.arkanoid.object;
 
+import javafx.scene.Node;
+
 public class GameObject {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+    protected int x;
+    protected int y;
+    protected int width;
+    protected int height;
 
     public void update(){}
     public void render(){}
-
 }
