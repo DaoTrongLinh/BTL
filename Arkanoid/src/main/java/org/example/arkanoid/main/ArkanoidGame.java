@@ -13,7 +13,7 @@ public class ArkanoidGame extends Application {
     @Override
     public void start(Stage stage) {
         Group root = new Group();
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 800,600 );
         stage.setScene(scene);
         stage.setTitle("Arkanoid - Week 6");
         stage.show();
