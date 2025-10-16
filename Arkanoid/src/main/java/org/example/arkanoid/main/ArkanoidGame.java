@@ -6,7 +6,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.arkanoid.control.Renderer;
-import org.example.arkanoid.object.GameManager;
+import org.example.arkanoid.control.GameManager;
 
 public class ArkanoidGame extends Application {
 

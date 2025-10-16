@@ -1,7 +1,11 @@
-package org.example.arkanoid.object;
+package org.example.arkanoid.control;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.example.arkanoid.object.Ball;
+import org.example.arkanoid.object.Brick;
+import org.example.arkanoid.object.Paddle;
 
 public class GameManager {
     private final Paddle paddle;

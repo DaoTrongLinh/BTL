@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import org.example.arkanoid.object.*;
+import org.example.arkanoid.control.GameManager;
 
 public class Renderer {
     private final Group root;
