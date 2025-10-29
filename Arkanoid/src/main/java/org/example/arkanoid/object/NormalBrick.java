@@ -1,9 +1,30 @@
 package org.example.arkanoid.object;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 public class NormalBrick extends Brick {
 
-    public NormalBrick(int x, int y, int width, int height) {
-        super(x, y, width, height); // Gọi constructor của Brick
+    // Constructor đơn giản cho gạch 1 hit
+    public NormalBrick(double x, double y, double width, double height) {
+        super(x, y, width, height, 10); // 10 điểm
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        if (!destroyed) {
+            gc.setFill(Color.GREEN);
+            gc.fillRect(x, y, width, height);
+
+            // (Tùy chọn) Thêm viền cho đẹp
+            gc.setStroke(Color.WHITE);
+            gc.strokeRect(x, y, width, height);
+        }
+    }
+
+    @Override
+    public void takeHit() {
+        // Gạch này chỉ cần 1 hit để vỡ
+        this.destroyed = true;
     }
 }
-

@@ -1,89 +1,42 @@
 package org.example.arkanoid.object;
 
-public class Ball {
-    private int x, y, radius;
-    private int dx, dy;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
-    public Ball(int x, int y, int radius, int dx, int dy) {
-        this.x = x;
-        this.y = y;
+public class Ball extends MovableObject {
+
+    private double radius;
+
+    public Ball(double x, double y, double radius, double dx, double dy) {
+        // x, y là tâm của quả bóng
+        // super() cần tọa độ (x, y) góc trên bên trái
+        super(x - radius, y - radius, radius * 2, radius * 2, dx, dy);
         this.radius = radius;
-        this.dx = dx;
-        this.dy = dy;
     }
 
+    @Override
     public void update() {
-        x += dx;
-        y += dy;
+        move(); // Gọi phương thức move() từ lớp cha MovableObject
     }
 
-    public void checkWallCollision(int width, int height) {
-        if (x - radius <= 0 || x + radius >= width) {
-            dx = -dx;
-        }
-        if (y - radius <= 0) {
-            dy = -dy;
-        }
-        // Nếu rơi xuống dưới thì reset
-        if (y - radius > height) {
-            x = width / 2;
-            y = height / 2;
-            dx = 4;
-            dy = -4;
-        }
+    @Override
+    public void render(GraphicsContext gc) {
+        gc.setFill(Color.RED);
+        // fillOval vẽ từ góc trên bên trái
+        gc.fillOval(x, y, width, height);
     }
 
-    public void checkPaddleCollision(Paddle paddle) {
-        if (x + radius >= paddle.getX() &&
-                x - radius <= paddle.getX() + paddle.getWidth() &&
-                y + radius >= paddle.getY() &&
-                y - radius <= paddle.getY() + paddle.getHeight()) {
-            dy = -dy;
-        }
-    }
-
-    // ✅ Các getter để Renderer.java gọi
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getRadius() {
+    // Bạn có thể thêm các phương thức khác ở đây (ví dụ: bounce, setSpeed, v.v.)
+    public double getRadius() {
         return radius;
     }
 
-    // ✅ Getter & Setter cho dx, dy (nếu cần sau này)
-    public int getDx() {
-        return dx;
+    // Ghi đè setters để đảm bảo x, y luôn là góc trên trái
+    public void setCenterX(double centerX) {
+        this.x = centerX - radius;
     }
 
-    public int getDy() {
-        return dy;
+    public void setCenterY(double centerY) {
+        this.y = centerY - radius;
     }
-
-    public void setDx(int dx) {
-        this.dx = dx;
-    }
-
-    public void setDy(int dy) {
-        this.dy = dy;
-    }
-    public boolean checkBrickCollision(Brick brick) {
-        int brickX = brick.getX();
-        int brickY = brick.getY();
-        int brickW = brick.getWidth();
-        int brickH = brick.getHeight();
-
-        // Nếu hình tròn (ball) giao với hình chữ nhật (brick)
-        if (x + radius >= brickX && x - radius <= brickX + brickW &&
-                y + radius >= brickY && y - radius <= brickY + brickH) {
-            dy = -dy; // Bóng bật ngược lại
-            return true;
-        }
-        return false;
-    }
-
 }

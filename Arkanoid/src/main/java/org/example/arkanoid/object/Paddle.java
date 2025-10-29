@@ -1,40 +1,51 @@
 package org.example.arkanoid.object;
 
-public class Paddle {
-    private int x, y, width, height;
-    private int speed = 6;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
-    public Paddle(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
+public class Paddle extends MovableObject {
+
+    private double originalWidth; // Lưu chiều rộng ban đầu để reset power-up
+
+    public Paddle(double x, double y, double width, double height) {
+        // dx và dy ban đầu là 0 vì nó không tự di chuyển
+        super(x, y, width, height, 0, 0);
+        this.originalWidth = width;
+    }
+
+    @Override
+    public void update() {
+        // Để trống.
+        // Vị trí của Paddle sẽ được cập nhật trực tiếp
+        // bằng setX() từ GameManager hoặc ArkanoidApp (dựa trên input của chuột).
+    }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        gc.setFill(Color.BLUE);
+        gc.fillRect(x, y, width, height);
+    }
+
+    // Các phương thức này sẽ được gọi bởi Power-up
+    public void setWidth(double width) {
+        // Khi thay đổi kích thước, giữ nó ở giữa
+        double center = this.x + this.width / 2;
         this.width = width;
-        this.height = height;
+        this.x = center - this.width / 2;
     }
 
-    public void moveLeft() {
-        x = Math.max(0, x - speed);
+    public double getOriginalWidth() {
+        return originalWidth;
     }
 
-    public void moveRight() {
-        x = Math.min(800 - width, x + speed); // Giới hạn trong khung 800px
-    }
-
-    // ✅ Getter cho Renderer và Ball sử dụng
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    // Ghi đè setX để ngăn thanh trượt ra khỏi màn hình
+    public void setX(double x, double screenWidth) {
+        if (x < 0) {
+            this.x = 0;
+        } else if (x + this.width > screenWidth) {
+            this.x = screenWidth - this.width;
+        } else {
+            this.x = x;
+        }
     }
 }
-
-
