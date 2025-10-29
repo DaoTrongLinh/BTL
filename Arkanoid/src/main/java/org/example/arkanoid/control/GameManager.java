@@ -224,4 +224,7 @@ public class GameManager {
     public int getScore() { return score; }
     public int getLives() { return lives; }
     public String getGameState() { return gameState; }
+
+    public void activateMultiBall() {
+    }
 }

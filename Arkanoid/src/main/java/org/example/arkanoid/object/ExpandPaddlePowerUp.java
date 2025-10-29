@@ -4,8 +4,11 @@ import org.example.arkanoid.control.GameManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class ExpandPaddlePowerUp extends PowerUp {
+/**
+ * Yêu cầu GameManager lấy Paddle và thay đổi độ rộng của nó
+ */
 
+public class ExpandPaddlePowerUp extends PowerUp {
     public ExpandPaddlePowerUp(double x, double y) {
         super(x, y, 30, 15, "EXPAND", 5000); // 30x15 là kích thước, 5000ms
     }
