@@ -20,6 +20,7 @@ public class GameManager {
     // Các lớp xử lý
     private CollisionHandler collisionHandler;
     private Level levelLoader;
+    private int currentLevel;;
 
     // Trạng thái game
     private int score;
@@ -32,7 +33,7 @@ public class GameManager {
 
         // Khởi tạo CollisionHandler
         this.collisionHandler = new CollisionHandler();
-        // this.levelLoader = new Level(); (Sẽ làm sau)
+        this.levelLoader = new Level();
 
         startGame();
     }
@@ -43,36 +44,40 @@ public class GameManager {
     public void startGame() {
         this.score = 0;
         this.lives = 3;
+        this.currentLevel = 1;
 
         // Khởi tạo các đối tượng
         paddle = new Paddle(WIDTH / 2.0 - 50, HEIGHT - 50, 100, 15);
         // Vận tốc ban đầu là 0, 0
         ball = new Ball(WIDTH / 2.0, HEIGHT / 2.0, 10, 0, 0);
 
-        // Tạm thời, tạo một vài viên gạch để test
+        loadLevel(currentLevel);
+    }
+
+    /**
+     * Tải một màn chơi cụ thể.
+     * @param levelNumber Số thứ tự của màn chơi.
+     */
+    private void loadLevel(int levelNumber) {
+        // Dọn dẹp màn chơi cũ
         bricks.clear();
+        powerUps.clear();
 
-        // --- SỬA LỖI KHOẢNG CÁCH GẠCH Ở ĐÂY ---
-        int numRows = 5;
-        int numCols = 10;
-        double startX = 50; // Lề bên trái
-        double startY = 50; // Lề bên trên
-        // Trừ đi lề 2 bên (startX * 2) và chia đều
-        double brickWidth = (WIDTH - (startX * 2)) / numCols;
-        double brickHeight = 35; // Chiều cao cố định
+        // Xây dựng đường dẫn file resource
+        String levelPath = "/levels/level" + levelNumber + ".txt";
 
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                // Đặt gạch sát nhau, không có khoảng cách
-                double brickX = startX + (j * brickWidth);
-                double brickY = startY + (i * brickHeight);
-                bricks.add(new NormalBrick(brickX, brickY, brickWidth, brickHeight));
-            }
+        // Gọi LevelLoader để tải gạch
+        this.bricks = levelLoader.loadLevel(levelPath, WIDTH, 50, 50); // Lề 50, 50
+
+        // Kiểm tra xem còn level không
+        if (this.bricks.isEmpty()) {
+            // Nếu loadLevel trả về danh sách rỗng (hết level hoặc lỗi)
+            gameState = "WIN"; // THẮNG GAME
+            System.out.println("YOU WIN! (No more levels)");
+        } else {
+            // Nếu tải level thành công, reset bóng
+            prepareNewBall();
         }
-        // --- KẾT THÚC SỬA ---
-
-        // Chuẩn bị quả bóng đầu tiên
-        prepareNewBall();
     }
 
     /**
@@ -86,8 +91,22 @@ public class GameManager {
             ball.update();
 
             // 2. Cập nhật Power-ups
-            for (PowerUp pu : powerUps) {
-                pu.update();
+            // Phải dùng Iterator để có thể xóa PowerUp một cách an toàn
+            // khi bắt được hoặc khi rơi ra ngoài
+            Iterator<PowerUp> powerUpIterator = powerUps.iterator();
+            while (powerUpIterator.hasNext()) {
+                PowerUp pu = powerUpIterator.next();
+                pu.update(); //  Cho nó rơi xuống
+
+                //  Kiểm tra va chạm với Paddle
+                if (pu.intersects(paddle)) {
+                    pu.applyEffect(this); // Áp dụng hiệu ứng (làm paddle to ra)
+                    powerUpIterator.remove(); // Xóa power-up khỏi danh sách
+                }
+                //  Dọn dẹp power-up nếu rơi ra khỏi màn hình
+                else if (pu.getY() > HEIGHT) {
+                    powerUpIterator.remove(); // Xóa power-up
+                }
             }
 
             // 3. Kiểm tra va chạm
@@ -122,12 +141,25 @@ public class GameManager {
 
             if (!brick.isDestroyed()) {
                 if (collisionHandler.handleBallBrickCollision(ball, brick)) {
-                    score += brick.getHitPoints(); // Cộng điểm
+                    // Hàm 'hit()' sẽ tự trừ độ bền và trả về 'true' nếu gạch bị vỡ
+                    boolean wasDestroyed = brick.hit();
+                    // Chỉ cộng điểm & thả power-up NẾU gạch BỊ VỠ
+                    if (wasDestroyed) {
+                        score += brick.getPoints();
 
-                    // (Tùy chọn) Thả Power-up tại đây
-                    // if (Math.random() > 0.8) { // 20% tỉ lệ rơi
-                    //     powerUps.add(new ExpandPaddlePowerUp(brick.getX(), brick.getY()));
-                    // }
+                        // Kích hoạt Power-up rơi ra
+                        // Tỉ lệ 20% rơi
+                        if (Math.random() < 0.2) {
+                            // (Khi bạn thêm power-up khác, bạn sẽ thêm logic chọn lựa ở đây)
+
+                            // Chỉ thả ExpandPaddle nếu paddle đang ở kích thước gốc
+                            if (paddle.getWidth() == paddle.getOriginalWidth()) {
+                                double puX = brick.getX() + (brick.getWidth() / 2) - 15;
+                                double puY = brick.getY();
+                                powerUps.add(new ExpandPaddlePowerUp(puX, puY));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -148,8 +180,9 @@ public class GameManager {
         }
 
         if (allDestroyed) {
-            gameState = "WIN";
-            System.out.println("YOU WIN!");
+            currentLevel++; // Tăng level
+            System.out.println("Level Clear! Loading Level " + currentLevel);
+            loadLevel(currentLevel); // Tải level mới
         }
     }
 
@@ -205,6 +238,9 @@ public class GameManager {
         // Reset paddle về giữa
         paddle.setX(WIDTH / 2.0 - 50, WIDTH);
 
+        // Gỡ bỏ hiệu ứng Power-up (reset paddle về kích thước cũ)
+        paddle.setWidth(paddle.getOriginalWidth());
+
         // Đặt vận tốc bóng bằng 0
         ball.setDx(0);
         ball.setDy(0);
@@ -221,6 +257,7 @@ public class GameManager {
     public Paddle getPaddle() { return paddle; }
     public Ball getBall() { return ball; }
     public List<Brick> getBricks() { return bricks; }
+    public List<PowerUp> getPowerUps() { return powerUps; }
     public int getScore() { return score; }
     public int getLives() { return lives; }
     public String getGameState() { return gameState; }

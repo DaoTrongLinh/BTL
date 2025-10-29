@@ -86,10 +86,7 @@ public class CollisionHandler {
                 }
             }
 
-            // 4. Gây sát thương/phá hủy gạch
-            brick.takeHit();
-
-            // 5. Trả về true để GameManager biết và cộng điểm
+            // 4. Trả về true để GameManager biết và cộng điểm
             return true;
         }
         return false; // Không va chạm

@@ -7,12 +7,14 @@ import javafx.scene.canvas.GraphicsContext;
  * Kế thừa từ GameObject và thêm logic về điểm, độ bền (hitPoints).
  */
 public abstract class Brick extends GameObject {
-    protected int hitPoints;
+    protected int hits;         // Độ bền: Cần bao nhiêu va chạm để vỡ
+    protected int points;       // Điểm số: Nhận được bao nhiêu điểm khi vỡ
     protected boolean destroyed;
 
-    public Brick(double x, double y, double width, double height, int hitPoints) {
+    public Brick(double x, double y, double width, double height, int hits, int points) {
         super(x, y, width, height);
-        this.hitPoints = hitPoints;
+        this.hits = hits;
+        this.points = points;
         this.destroyed = false;
     }
 
@@ -26,15 +28,19 @@ public abstract class Brick extends GameObject {
     }
 
     /**
-     * Phương thức trừu tượng xử lý khi gạch bị bóng va vào.
-     * Lớp con (như NormalBrick) sẽ định nghĩa chi tiết.
+     * Xử lý khi gạch bị bóng va chạm.
+     * Trừ 1 'hit' (độ bền).
+     * @return true nếu gạch bị phá hủy (hết 'hits'), false nếu chỉ bị hư hại.
      */
-    public abstract void takeHit();
+    public boolean hit() {
+        this.hits--; // Giảm độ bền
+        if (this.hits <= 0) {
+            this.destroyed = true;
+            return true; // Báo cho GameManager biết "tôi đã bị phá hủy"
+        }
+        return false; // Báo cho GameManager biết "tôi vẫn còn sống"
+    }
 
-    /**
-     * Kiểm tra xem gạch đã bị phá hủy chưa.
-     * @return true nếu gạch đã bị phá hủy, ngược lại false.
-     */
     public boolean isDestroyed() {
         return destroyed;
     }
@@ -43,7 +49,10 @@ public abstract class Brick extends GameObject {
      * Lấy số điểm mà viên gạch này mang lại.
      * @return số điểm.
      */
-    public int getHitPoints() {
-        return hitPoints;
+    public int getPoints() {
+        return points;
     }
+
+    @Override
+    public abstract void render(GraphicsContext gc);
 }

@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.example.arkanoid.object.Brick;
+import org.example.arkanoid.object.PowerUp;
 
 /**
  * Chịu trách nhiệm cho tất cả việc VẼ lên màn hình.
@@ -49,7 +50,15 @@ public class GameView {
             }
         }
 
-        // 5. Vẽ điểm số và mạng sống
+        // 5. Vẽ tất cả các Power-up đang rơi
+        if (manager.getPowerUps() != null) {
+            // Lấy danh sách power-up từ manager
+            for (PowerUp pu : manager.getPowerUps()) {
+                pu.render(gc); // Gọi hàm render của PowerUp
+            }
+        }
+
+        // 6. Vẽ điểm số và mạng sống
         renderGameInfo(manager.getScore(), manager.getLives());
     }
 

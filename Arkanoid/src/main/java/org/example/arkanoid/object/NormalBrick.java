@@ -7,24 +7,17 @@ public class NormalBrick extends Brick {
 
     // Constructor đơn giản cho gạch 1 hit
     public NormalBrick(double x, double y, double width, double height) {
-        super(x, y, width, height, 10); // 10 điểm
+        super(x, y, width, height, 1, 10); // 10 điểm
     }
 
     @Override
     public void render(GraphicsContext gc) {
-        if (!destroyed) {
-            gc.setFill(Color.GREEN);
-            gc.fillRect(x, y, width, height);
+        gc.setFill(Color.GREEN);
+        gc.fillRect(x, y, width, height);
 
-            // (Tùy chọn) Thêm viền cho đẹp
-            gc.setStroke(Color.WHITE);
-            gc.strokeRect(x, y, width, height);
-        }
-    }
+        // (Tùy chọn) Thêm viền cho đẹp
+        gc.setStroke(Color.WHITE);
+        gc.strokeRect(x, y, width, height);
 
-    @Override
-    public void takeHit() {
-        // Gạch này chỉ cần 1 hit để vỡ
-        this.destroyed = true;
     }
 }
