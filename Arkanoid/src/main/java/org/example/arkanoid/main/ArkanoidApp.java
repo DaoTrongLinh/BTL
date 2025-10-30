@@ -62,9 +62,6 @@ public class ArkanoidApp extends Application {
 
         //2. Khởi tạo và thêm nhạc
         initMusic();
-        if (backgroundMusicPlayer != null) {
-            backgroundMusicPlayer.play();
-        }
 
         // 3. Hiển thị Main Menu trước
         showMainMenu();
@@ -184,7 +181,11 @@ public class ArkanoidApp extends Application {
      * Đây là toàn bộ logic cũ từ phương thức start() của bạn.
      */
     private void startGameScene() {
-        // 1. Thiết lập Pane và Canvas cho game
+        // 1.Bắt đầu phát nhạc
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.play();
+        }
+        // 2. Thiết lập Pane và Canvas cho game
         Pane gameRoot = new Pane();
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         gameRoot.getChildren().add(canvas);
@@ -192,11 +193,11 @@ public class ArkanoidApp extends Application {
         // Lấy GraphicsContext (cây cọ) từ Canvas
         gc = canvas.getGraphicsContext2D();
 
-        // 2. Khởi tạo "Bộ não" và "Người vẽ"
+        // 3. Khởi tạo "Bộ não" và "Người vẽ"
         gameManager = new GameManager();
         gameView = new GameView(gc);
 
-        // 3. Tạo Game Loop (Vòng lặp game)
+        // 4. Tạo Game Loop (Vòng lặp game)
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -208,7 +209,7 @@ public class ArkanoidApp extends Application {
             }
         };
 
-        // 4. Gắn sự kiện input vào Scene cho game
+        // 5. Gắn sự kiện input vào Scene cho game
         scene.setOnMouseMoved(event -> {
             if (gameManager != null) {
                 gameManager.movePaddle(event.getX());
@@ -221,10 +222,10 @@ public class ArkanoidApp extends Application {
             }
         });
 
-        // 5. ĐẶT CẢNH GAME LÀM GỐC (Đây là bước "chuyển cảnh")
+        // 6. ĐẶT CẢNH GAME LÀM GỐC (Đây là bước "chuyển cảnh")
         scene.setRoot(gameRoot);
 
-        // 6. Bắt đầu vòng lặp game
+        // 7. Bắt đầu vòng lặp game
         gameLoop.start();
     }
 
