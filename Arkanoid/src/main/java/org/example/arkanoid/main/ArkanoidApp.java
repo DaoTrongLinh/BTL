@@ -27,6 +27,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.net.URL;
+//Thêm import Menu
+import org.example.arkanoid.control.MainMenuController;
 
 /**
  * Lớp Application chính của JavaFX.
@@ -103,75 +105,23 @@ public class ArkanoidApp extends Application {
     /**
      * Tạo và hiển thị Main Menu.
      */
+    /**
+     * Tạo và hiển thị Main Menu. (ĐÃ REFACTOR)
+     */
     private void showMainMenu() {
-        // --- Bắt đầu phần THÊM ẢNH ---
-        // 1. Tải ảnh
-        Image backgroundImage = null;
-        try {
-            // Cách tải ảnh từ thư mục resources
-            // "images/arkanoid_background.png" là đường dẫn tương đối trong thư mục resources
-            // Hoặc nếu bạn đặt ảnh ngay trong package main, có thể dùng:
-            // getClass().getResourceAsStream("arkanoid_background.png")
-            backgroundImage = new Image(getClass().getResourceAsStream("/image/GoatMessi.jpg"));
-        } catch (Exception e) {
-            System.err.println("Không thể tải ảnh nền: " + e.getMessage());
-            // Có thể đặt một ảnh mặc định hoặc chỉ dùng màu nền nếu ảnh không tải được
-        }
+        // 1. Tạo Controller, truyền 'this' (chính ArkanoidApp) vào
+        MainMenuController controller = new MainMenuController(this);
 
-        // 2. Tạo ImageView từ ảnh đã tải
-        ImageView backgroundImageView = null;
-        if (backgroundImage != null) {
-            backgroundImageView = new ImageView(backgroundImage);
-            // (Tùy chọn) Điều chỉnh kích thước ảnh cho phù hợp với cửa sổ
-            backgroundImageView.setFitWidth(WIDTH);
-            backgroundImageView.setFitHeight(HEIGHT);
-            // (Tùy chọn) Giữ tỷ lệ khung hình
-            backgroundImageView.setPreserveRatio(false);
-        }
-        // --- Kết thúc phần THÊM ẢNH ---
+        // 2. Tạo View (MainMenu), truyền controller và kích thước vào
+        MainMenu mainMenuView = new MainMenu(controller, WIDTH, HEIGHT);
 
+        // 3. Lấy root pane (BorderPane) từ MainMenu view
+        BorderPane menuRoot = mainMenuView.createMenuRoot();
 
-        // 1. Tạo các nút
-        Button startButton = new Button("Start Game");
-        Button settingsButton = new Button("Settings");
-
-        // (Tùy chọn) Đặt kích thước cho nút
-        startButton.setPrefSize(150, 40);
-        settingsButton.setPrefSize(150, 40);
-
-        // 2. Tạo layout cho menu
-        VBox menuLayout = new VBox(20); // 20px khoảng cách giữa các nút
-        menuLayout.getChildren().addAll(startButton, settingsButton);
-        menuLayout.setAlignment(Pos.CENTER); // Căn giữa các nút
-
-        // --- Bắt đầu phần ĐẶT ẢNH VÀO NỀN ---
-        // 3. Đặt layout vào một BorderPane để căn giữa toàn bộ
-        BorderPane menuRoot = new BorderPane();
-
-        // Nếu có ảnh nền, thêm nó vào layer phía dưới
-        if (backgroundImageView != null) {
-            menuRoot.getChildren().add(backgroundImageView); // Thêm ảnh nền vào menuRoot
-        }
-        menuRoot.setCenter(menuLayout); // Đặt các nút menu lên trên ảnh nền
-        // --- Kết thúc phần ĐẶT ẢNH VÀO NỀN ---
-
-
-        // menuRoot.setStyle("-fx-background-color: #2B2B2B;"); // Bỏ hoặc giữ dòng này tùy theo bạn muốn dùng ảnh hay màu nền
-
-        // 4. Gắn sự kiện cho nút
-        startButton.setOnAction(event -> {
-            startGameScene(); // Gọi hàm để bắt đầu game
-        });
-
-        settingsButton.setOnAction(event -> {
-            System.out.println("Settings clicked - no action yet.");
-            // Tạm thời chưa làm gì cả
-        });
-
-        // 5. Đặt menu làm gốc của Scene
+        // 4. Đặt menu làm gốc của Scene
         scene.setRoot(menuRoot);
 
-        // Xóa các sự kiện input cũ (nếu có)
+        // 5. Xóa các sự kiện input cũ (nếu có)
         scene.setOnMouseMoved(null);
         scene.setOnKeyPressed(null);
     }
@@ -180,7 +130,7 @@ public class ArkanoidApp extends Application {
      * Khởi tạo và chuyển sang cảnh game.
      * Đây là toàn bộ logic cũ từ phương thức start() của bạn.
      */
-    private void startGameScene() {
+    public void startGameScene() {
         // 1.Bắt đầu phát nhạc
         if (backgroundMusicPlayer != null) {
             backgroundMusicPlayer.play();
