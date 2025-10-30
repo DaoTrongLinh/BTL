@@ -2,7 +2,10 @@ package org.example.arkanoid.control;
 
 import org.example.arkanoid.object.Ball;
 import org.example.arkanoid.object.Brick;
+import org.example.arkanoid.object.Bullet;
 import org.example.arkanoid.object.Paddle;
+
+import java.util.List;
 
 /**
  * Xử lý tất cả logic va chạm giữa các đối tượng trong game.
@@ -90,5 +93,24 @@ public class CollisionHandler {
             return true;
         }
         return false; // Không va chạm
+    }
+
+    /**
+     * Xử lý va chạm VẬT LÝ giữa MỘT viên đạn và TẤT CẢ các viên gạch.
+     * @param bullet Viên đạn đang kiểm tra.
+     * @param bricks Danh sách tất cả gạch.
+     * @return Viên gạch bị trúng (để GameManager xử lý), hoặc null nếu không trúng.
+     */
+    public Brick handleBulletBrickCollision(Bullet bullet, List<Brick> bricks) {
+        // Lặp qua tất cả gạch
+        for (Brick brick : bricks) {
+            // Nếu gạch còn sống VÀ đạn va chạm vào nó
+            if (!brick.isDestroyed() && bullet.getBounds().intersects(brick.getBounds())) {
+                // Va chạm xảy ra! Trả về viên gạch bị trúng.
+                return brick;
+            }
+        }
+        // Không trúng viên gạch nào
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 public class Paddle extends MovableObject {
 
     private double originalWidth; // Lưu chiều rộng ban đầu để reset power-up
+    private boolean laserActive = false; // Biến cờ để kiểm tra trạng thái bắn
 
     public Paddle(double x, double y, double width, double height) {
         // dx và dy ban đầu là 0 vì nó không tự di chuyển
@@ -22,7 +23,11 @@ public class Paddle extends MovableObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
+        if (laserActive) {
+            gc.setFill(Color.CRIMSON); // Màu đỏ khi có laser
+        } else {
+            gc.setFill(Color.BLUE); // Màu bình thường
+        }
         gc.fillRect(x, y, width, height);
     }
 
@@ -47,5 +52,21 @@ public class Paddle extends MovableObject {
         } else {
             this.x = x;
         }
+    }
+
+    /**
+     * Kích hoạt hoặc vô hiệu hóa khả năng bắn laser
+     * (Được gọi bởi LaserPowerUp)
+     */
+    public void setLaserActive(boolean active) {
+        this.laserActive = active;
+    }
+
+    /**
+     * Kiểm tra xem paddle có đang bắn laser không
+     * (Được gọi bởi GameManager khi bắn)
+     */
+    public boolean isLaserActive() {
+        return this.laserActive;
     }
 }

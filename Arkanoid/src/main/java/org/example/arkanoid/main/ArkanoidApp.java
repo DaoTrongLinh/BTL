@@ -135,6 +135,12 @@ public class ArkanoidApp extends Application {
             }
         });
 
+        scene.setOnMouseClicked(event -> {
+            if (gameManager != null) {
+                gameManager.paddleShoot();
+            }
+        });
+
         // 6. ĐẶT CẢNH GAME LÀM GỐC (Đây là bước "chuyển cảnh")
         scene.setRoot(gameRoot);
 

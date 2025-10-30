@@ -11,11 +11,18 @@ public class GameManager {
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
 
+    // Thời gian (nano giây) của lần bắn cuối, tính cooldown
+    private long lastShotTime = 0;
+
+    // Khoảng cách mỗi lần bắn (nano giây)
+    private static final long SHOOT_COOLDOWN = 1_000_000_000L;
+
     // Các đối tượng game
     private Paddle paddle;
     private Ball ball;
     private List<Brick> bricks;
     private List<PowerUp> powerUps; // Danh sách power-up đang rơi
+    private List<Bullet> bullets;
 
     // Các lớp xử lý
     private CollisionHandler collisionHandler;
@@ -30,6 +37,7 @@ public class GameManager {
     public GameManager() {
         this.bricks = new ArrayList<>();
         this.powerUps = new ArrayList<>();
+        this.bullets = new ArrayList<>();
 
         // Khởi tạo CollisionHandler
         this.collisionHandler = new CollisionHandler();
@@ -62,6 +70,7 @@ public class GameManager {
         // Dọn dẹp màn chơi cũ
         bricks.clear();
         powerUps.clear();
+        bullets.clear();
 
         // Xây dựng đường dẫn file resource
         String levelPath = "/levels/level" + levelNumber + ".txt";
@@ -77,6 +86,32 @@ public class GameManager {
         } else {
             // Nếu tải level thành công, reset bóng
             prepareNewBall();
+        }
+    }
+
+    /**
+     * Được gọi bởi ArkanoidApp
+     */
+    public void paddleShoot() {
+        // Chỉ bắn khi đang chơi VÀ paddle có power-up
+        if (gameState.equals("PLAYING") && paddle.isLaserActive()) {
+
+            long currentTime = System.nanoTime(); // Lấy thời gian hiện tại
+
+            // Kiểm tra xem (thời gian hiện tại - lần bắn cuối)
+            // có lớn hơn 1 giây không
+            if ((currentTime - lastShotTime) > SHOOT_COOLDOWN) {
+                // Tạo 2 viên đạn ở 2 đầu paddle
+                double bulletX1 = paddle.getX() + 5; // Hơi thụt vào 1 chút
+                double bulletX2 = paddle.getX() + paddle.getWidth() - 10; // (5 + 5)
+                double bulletY = paddle.getY() - 10; // Bắn từ phía trên paddle
+
+                bullets.add(new Bullet(bulletX1, bulletY));
+                bullets.add(new Bullet(bulletX2, bulletY));
+
+                lastShotTime = currentTime; // Cập nhật thời gian bắn cuối
+            }
+            // (Bạn có thể thêm âm thanh bắn ở đây)
         }
     }
 
@@ -106,6 +141,33 @@ public class GameManager {
                 //  Dọn dẹp power-up nếu rơi ra khỏi màn hình
                 else if (pu.getY() > HEIGHT) {
                     powerUpIterator.remove(); // Xóa power-up
+                }
+            }
+
+            Iterator<Bullet> bulletIterator = bullets.iterator();
+            while (bulletIterator.hasNext()) {
+                Bullet bullet = bulletIterator.next();
+                bullet.update(); // 1. Cho đạn bay
+
+                // 2. Dọn dẹp đạn bay ra khỏi màn hình
+                if (bullet.isOffScreen(HEIGHT)) {
+                    bulletIterator.remove();
+                    continue; // Bỏ qua, xét viên đạn tiếp theo
+                }
+
+                // 3. Yêu cầu CollisionHandler kiểm tra va chạm
+                Brick hitBrick = collisionHandler.handleBulletBrickCollision(bullet, bricks);
+
+                // 4. Xử lý logic game NẾU có va chạm
+                if (hitBrick != null) {
+                    // CollisionHandler đã báo có va chạm
+                    boolean wasDestroyed = hitBrick.hit();
+                    if (wasDestroyed) {
+                        score += hitBrick.getPoints(); // Cộng điểm
+                    }
+
+                    // Xóa viên đạn
+                    bulletIterator.remove();
                 }
             }
 
@@ -152,11 +214,18 @@ public class GameManager {
                         if (Math.random() < 0.2) {
                             // (Khi bạn thêm power-up khác, bạn sẽ thêm logic chọn lựa ở đây)
 
-                            // Chỉ thả ExpandPaddle nếu paddle đang ở kích thước gốc
-                            if (paddle.getWidth() == paddle.getOriginalWidth()) {
-                                double puX = brick.getX() + (brick.getWidth() / 2) - 15;
-                                double puY = brick.getY();
-                                powerUps.add(new ExpandPaddlePowerUp(puX, puY));
+                            double puX = brick.getX() + (brick.getWidth() / 2) - 15;
+                            double puY = brick.getY();
+
+                            // 50/50 cơ hội nhận 1 trong 2
+                            if (Math.random() < 0.5) {
+                                // Chỉ thả Expand nếu paddle chưa to
+                                if (paddle.getWidth() == paddle.getOriginalWidth()) {
+                                    powerUps.add(new ExpandPaddlePowerUp(puX, puY));
+                                }
+                            } else {
+                                // Thả Laser
+                                powerUps.add(new LaserPowerUp(puX, puY));
                             }
                         }
                     }
@@ -238,8 +307,10 @@ public class GameManager {
         // Reset paddle về giữa
         paddle.setX(WIDTH / 2.0 - 50, WIDTH);
 
-        // Gỡ bỏ hiệu ứng Power-up (reset paddle về kích thước cũ)
-        paddle.setWidth(paddle.getOriginalWidth());
+        // Gỡ bỏ hiệu ứng Power-up
+        paddle.setWidth(paddle.getOriginalWidth()); // Reset Expand
+        paddle.setLaserActive(false); // Reset Laser
+        bullets.clear(); // Xóa hết đạn
 
         // Đặt vận tốc bóng bằng 0
         ball.setDx(0);
@@ -250,7 +321,6 @@ public class GameManager {
         ball.setCenterY(paddle.getY() - ball.getRadius());
     }
 
-
     // --- GETTERS ---
     // GameView sẽ dùng các getters này để VẼ đối tượng
 
@@ -258,10 +328,8 @@ public class GameManager {
     public Ball getBall() { return ball; }
     public List<Brick> getBricks() { return bricks; }
     public List<PowerUp> getPowerUps() { return powerUps; }
+    public List<Bullet> getBullets() { return this.bullets; }
     public int getScore() { return score; }
     public int getLives() { return lives; }
     public String getGameState() { return gameState; }
-
-    public void activateMultiBall() {
-    }
 }

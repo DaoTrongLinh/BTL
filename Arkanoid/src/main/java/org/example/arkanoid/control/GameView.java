@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.example.arkanoid.object.Brick;
+import org.example.arkanoid.object.Bullet;
 import org.example.arkanoid.object.PowerUp;
 
 import javafx.scene.image.Image; //import để thêm ảnh
@@ -105,7 +106,14 @@ public class GameView {
                 }
             }
 
-            // 6. Vẽ điểm số và mạng sống
+            // 6. Vẽ tất cả các viên Đạn (Bullet)
+            if (manager.getBullets() != null) {
+                for (Bullet bullet : manager.getBullets()) {
+                    bullet.render(gc);
+                }
+            }
+
+            // 7. Vẽ điểm số và mạng sống
             renderGameInfo(manager.getScore(), manager.getLives());
         }
     }
@@ -148,16 +156,16 @@ public class GameView {
         // 2. Căn chữ ra giữa
         gc.setTextAlign(TextAlignment.CENTER);
 
-        // 4. Vẽ điểm số cuối cùng
+        // 3. Vẽ điểm số cuối cùng
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Arial", 36));
         gc.fillText("Final Score: " + finalScore, width / 2, height / 2 + 20);
 
-        // 5. Hướng dẫn quay về menu
+        // 4. Hướng dẫn quay về menu
         gc.setFont(new Font("Arial", 18));
         gc.fillText("Press ESC to Return to Menu", width / 2, height / 2 + 80);
 
-        // 6. Reset lại căn lề (quan trọng)
+        // 5. Reset lại căn lề (quan trọng)
         gc.setTextAlign(TextAlignment.LEFT);
     }
 }
