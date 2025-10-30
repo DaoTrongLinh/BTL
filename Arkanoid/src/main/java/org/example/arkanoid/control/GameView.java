@@ -8,6 +8,8 @@ import org.example.arkanoid.object.PowerUp;
 
 import javafx.scene.image.Image; //import để thêm ảnh
 
+import javafx.scene.text.TextAlignment; //import để thêm màn hình endgame
+
 /**
  * Chịu trách nhiệm cho tất cả việc VẼ lên màn hình.
  * Nó lấy dữ liệu từ GameManager và render chúng lên Canvas.
@@ -19,6 +21,7 @@ public class GameView {
     private double height;
 
     private Image backgroundImage; // <-- BIẾN MỚI ĐỂ LƯU ẢNH NỀN
+    private Image gameOverImage; // Biến để lưu ảnh kết thúc
 
     public GameView(GraphicsContext gc) {
         this.gc = gc;
@@ -26,12 +29,20 @@ public class GameView {
         this.height = gc.getCanvas().getHeight();
 
         // --- TẢI ẢNH NỀN CHO GAME TẠI ĐÂY ---
-        try {
+        try { //Start Screen
             // Đảm bảo bạn có ảnh "game_background.png" trong thư mục "/images/"
             backgroundImage = new Image(getClass().getResourceAsStream("/image/GalaxyGame.jpg"));
         } catch (Exception e) {
             System.err.println("Không thể tải ảnh nền game: " + e.getMessage());
             backgroundImage = null; // Để null nếu không tải được
+        }
+
+        try { //GameOver Screen
+            // Đảm bảo bạn có ảnh "GameOverScreen.png" trong thư mục "/image/"
+            gameOverImage = new Image(getClass().getResourceAsStream("/image/GameOver.png"));
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh GAME OVER: " + e.getMessage());
+            gameOverImage = null; // Để null nếu không tải được
         }
         // --- KẾT THÚC TẢI ẢNH ---
     }
@@ -42,7 +53,11 @@ public class GameView {
      */
     public void render(GameManager manager) {
         // --- THAY ĐỔI CÁCH VẼ NỀN ---
-        // 1. Vẽ ảnh nền (hoặc màu đen nếu ảnh lỗi)
+
+        // 1. Lấy trạng thái game (nhờ vào getter ta vừa thêm)
+        String gameState = manager.getGameState();
+
+        // 2. Vẽ ảnh nền (hoặc màu đen nếu ảnh lỗi)
         if (backgroundImage != null) {
             // Vẽ ảnh nền, kéo dãn ra cho vừa màn hình
             gc.drawImage(backgroundImage, 0, 0, width, height);
@@ -53,38 +68,47 @@ public class GameView {
         }
         // --- KẾT THÚC THAY ĐỔI ---
 
+        // 3. KIỂM TRA TRẠNG THÁI
+        if (gameState.equals("GAME_OVER")) {
 
-        // 2. Vẽ quả bóng
-        if (manager.getBall() != null) {
-            manager.getBall().render(gc);
-        }
+            // Nếu thua -> Vẽ màn hình GAME OVER
+            renderGameOverScreen(manager.getScore());
 
-        // 3. Vẽ thanh trượt
-        if (manager.getPaddle() != null) {
-            manager.getPaddle().render(gc);
-        }
+        } else {
 
-        // 4. Vẽ tất cả các viên gạch
-        if (manager.getBricks() != null) {
-            for (Brick brick : manager.getBricks()) {
-                if (!brick.isDestroyed()) { // Chỉ vẽ gạch chưa bị phá
-                    brick.render(gc);
+            // Nếu chưa thua (PLAYING, READY, v.v.) -> Vẽ game như bình thường
+
+            // 2. Vẽ quả bóng
+            if (manager.getBall() != null) {
+                manager.getBall().render(gc);
+            }
+
+            // 3. Vẽ thanh trượt
+            if (manager.getPaddle() != null) {
+                manager.getPaddle().render(gc);
+            }
+
+            // 4. Vẽ tất cả các viên gạch
+            if (manager.getBricks() != null) {
+                for (Brick brick : manager.getBricks()) {
+                    if (!brick.isDestroyed()) { // Chỉ vẽ gạch chưa bị phá
+                        brick.render(gc);
+                    }
                 }
             }
-        }
 
-        // 5. Vẽ tất cả các Power-up đang rơi
-        if (manager.getPowerUps() != null) {
-            // Lấy danh sách power-up từ manager
-            for (PowerUp pu : manager.getPowerUps()) {
-                pu.render(gc); // Gọi hàm render của PowerUp
+            // 5. Vẽ tất cả các Power-up đang rơi
+            if (manager.getPowerUps() != null) {
+                // Lấy danh sách power-up từ manager
+                for (PowerUp pu : manager.getPowerUps()) {
+                    pu.render(gc); // Gọi hàm render của PowerUp
+                }
             }
+
+            // 6. Vẽ điểm số và mạng sống
+            renderGameInfo(manager.getScore(), manager.getLives());
         }
-
-        // 6. Vẽ điểm số và mạng sống
-        renderGameInfo(manager.getScore(), manager.getLives());
     }
-
     /**
      * Vẽ thông tin game (Điểm, Mạng) lên màn hình.
      */
@@ -97,5 +121,43 @@ public class GameView {
 
         // Vẽ mạng sống
         gc.fillText("Lives: " + lives, width - 80, 25); // Cách lề phải 80px
+    }
+
+    /**
+     * Vẽ màn hình GAME OVER
+     */
+    private void renderGameOverScreen(int finalScore) {
+
+        if (gameOverImage != null) {
+            // Vẽ ảnh 'gameOverImage' lên toàn màn hình
+            gc.drawImage(gameOverImage, 0, 0, width, height);
+        } else {
+            // Dự phòng: Nếu ảnh lỗi, vẽ nền đen và chữ như cũ
+            gc.setFill(new Color(0, 0, 0, 0.7));
+            gc.fillRect(0, 0, width, height);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setFill(Color.RED);
+            gc.setFont(new Font("Arial", 72));
+            gc.fillText("GAME OVER", width / 2, height / 2 - 40);
+        }
+
+        // 1. Vẽ một lớp nền đen mờ (cho đẹp)
+        gc.setFill(new Color(0, 0, 0, 0.7)); // Đen, mờ 70%
+        gc.fillRect(0, 0, width, height);
+
+        // 2. Căn chữ ra giữa
+        gc.setTextAlign(TextAlignment.CENTER);
+
+        // 4. Vẽ điểm số cuối cùng
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("Arial", 36));
+        gc.fillText("Final Score: " + finalScore, width / 2, height / 2 + 20);
+
+        // 5. Hướng dẫn quay về menu
+        gc.setFont(new Font("Arial", 18));
+        gc.fillText("Press ESC to Return to Menu", width / 2, height / 2 + 80);
+
+        // 6. Reset lại căn lề (quan trọng)
+        gc.setTextAlign(TextAlignment.LEFT);
     }
 }
