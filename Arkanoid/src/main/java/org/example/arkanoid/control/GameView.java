@@ -6,6 +6,8 @@ import javafx.scene.text.Font;
 import org.example.arkanoid.object.Brick;
 import org.example.arkanoid.object.PowerUp;
 
+import javafx.scene.image.Image; //import để thêm ảnh
+
 /**
  * Chịu trách nhiệm cho tất cả việc VẼ lên màn hình.
  * Nó lấy dữ liệu từ GameManager và render chúng lên Canvas.
@@ -16,10 +18,22 @@ public class GameView {
     private double width;
     private double height;
 
+    private Image backgroundImage; // <-- BIẾN MỚI ĐỂ LƯU ẢNH NỀN
+
     public GameView(GraphicsContext gc) {
         this.gc = gc;
         this.width = gc.getCanvas().getWidth();
         this.height = gc.getCanvas().getHeight();
+
+        // --- TẢI ẢNH NỀN CHO GAME TẠI ĐÂY ---
+        try {
+            // Đảm bảo bạn có ảnh "game_background.png" trong thư mục "/images/"
+            backgroundImage = new Image(getClass().getResourceAsStream("/image/GalaxyGame.jpg"));
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh nền game: " + e.getMessage());
+            backgroundImage = null; // Để null nếu không tải được
+        }
+        // --- KẾT THÚC TẢI ẢNH ---
     }
 
     /**
@@ -27,9 +41,18 @@ public class GameView {
      * @param manager GameManager chứa tất cả các đối tượng game.
      */
     public void render(GameManager manager) {
-        // 1. Xóa toàn bộ màn hình
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, width, height);
+        // --- THAY ĐỔI CÁCH VẼ NỀN ---
+        // 1. Vẽ ảnh nền (hoặc màu đen nếu ảnh lỗi)
+        if (backgroundImage != null) {
+            // Vẽ ảnh nền, kéo dãn ra cho vừa màn hình
+            gc.drawImage(backgroundImage, 0, 0, width, height);
+        } else {
+            // Nếu không có ảnh, vẽ màu đen như cũ
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, 0, width, height);
+        }
+        // --- KẾT THÚC THAY ĐỔI ---
+
 
         // 2. Vẽ quả bóng
         if (manager.getBall() != null) {
@@ -66,13 +89,13 @@ public class GameView {
      * Vẽ thông tin game (Điểm, Mạng) lên màn hình.
      */
     private void renderGameInfo(int score, int lives) {
-        gc.setFill(Color.WHITE);
-        gc.setFont(new Font("Arial", 20));
+        gc.setFill(Color.WHITE); // Đặt màu trắng để nổi bật
+        gc.setFont(new Font("Arial", 20)); // Đặt font và cỡ chữ
 
-        // Hiển thị điểm
-        gc.fillText("Score: " + score, 10, 25);
+        // Vẽ điểm
+        gc.fillText("Score: " + score, 10, 25); // 10px từ trái, 25px từ trên
 
-        // Hiển thị mạng sống
-        gc.fillText("Lives: " + lives, width - 80, 25);
+        // Vẽ mạng sống
+        gc.fillText("Lives: " + lives, width - 80, 25); // Cách lề phải 80px
     }
 }

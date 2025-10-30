@@ -10,6 +10,7 @@ module org.example.arkanoid {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires javafx.media;
 
     opens org.example.arkanoid.main to javafx.fxml;
     exports org.example.arkanoid.main;
