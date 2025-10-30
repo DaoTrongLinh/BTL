@@ -23,6 +23,7 @@ public class GameView {
 
     private Image backgroundImage; // <-- BIẾN MỚI ĐỂ LƯU ẢNH NỀN
     private Image gameOverImage; // Biến để lưu ảnh kết thúc
+    private Image winImage; //Biến để lưu ảnh lúc thắng
 
     public GameView(GraphicsContext gc) {
         this.gc = gc;
@@ -31,7 +32,6 @@ public class GameView {
 
         // --- TẢI ẢNH NỀN CHO GAME TẠI ĐÂY ---
         try { //Start Screen
-            // Đảm bảo bạn có ảnh "game_background.png" trong thư mục "/images/"
             backgroundImage = new Image(getClass().getResourceAsStream("/image/GalaxyGame.jpg"));
         } catch (Exception e) {
             System.err.println("Không thể tải ảnh nền game: " + e.getMessage());
@@ -39,12 +39,19 @@ public class GameView {
         }
 
         try { //GameOver Screen
-            // Đảm bảo bạn có ảnh "GameOverScreen.png" trong thư mục "/image/"
             gameOverImage = new Image(getClass().getResourceAsStream("/image/GameOver.png"));
         } catch (Exception e) {
             System.err.println("Không thể tải ảnh GAME OVER: " + e.getMessage());
             gameOverImage = null; // Để null nếu không tải được
         }
+
+        try { //GameWin Screen
+            winImage = new Image(getClass().getResourceAsStream("/image/YouWin.jpg"));
+        } catch (Exception e) {
+            System.err.println("Không thể tải ảnh WIN: " + e.getMessage());
+            winImage = null; // Để null nếu không tải được
+        }
+
         // --- KẾT THÚC TẢI ẢNH ---
     }
 
@@ -75,6 +82,9 @@ public class GameView {
             // Nếu thua -> Vẽ màn hình GAME OVER
             renderGameOverScreen(manager.getScore());
 
+        } else if (gameState.equals("WIN")) {
+            // Nếu thắng -> Vẽ màn hình WIN
+            renderWinScreen(manager.getScore());
         } else {
 
             // Nếu chưa thua (PLAYING, READY, v.v.) -> Vẽ game như bình thường
@@ -131,6 +141,23 @@ public class GameView {
         gc.fillText("Lives: " + lives, width - 80, 25); // Cách lề phải 80px
     }
 
+    /**
+     *Vẽ màn hình WIN
+     */
+    private void renderWinScreen(int finalScore) {
+        if (winImage != null) {
+            // Vẽ ảnh 'winImage' lên toàn màn hình
+            gc.drawImage(winImage, 0, 0, width, height);
+        } else {
+            // Dự phòng: Nếu ảnh lỗi, vẽ nền đen và chữ
+            gc.setFill(new Color(0, 0.1, 0.3, 0.8)); // Nền xanh đậm
+            gc.fillRect(0, 0, width, height);
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setFill(Color.YELLOW);
+            gc.setFont(new Font("Arial", 72));
+            gc.fillText("YOU WIN!", width / 2, height / 2 - 40);
+        }
+    }
     /**
      * Vẽ màn hình GAME OVER
      */

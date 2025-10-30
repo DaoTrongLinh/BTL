@@ -68,9 +68,6 @@ public class ArkanoidApp extends Application {
     /**
      * Tạo và hiển thị Main Menu.
      */
-    /**
-     * Tạo và hiển thị Main Menu. (ĐÃ REFACTOR)
-     */
     private void showMainMenu() {
         // 1. Tạo Controller, truyền 'this' (chính ArkanoidApp) vào
         MainMenuController controller = new MainMenuController(this);
