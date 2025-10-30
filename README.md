@@ -12,10 +12,10 @@ Nguyễn Viết Linh
 -MainMenu và MainMenuController
 Lê Nguyễn Quang Minh
 -GameObject
--MovableObject
 -Paddle
 -Vẽ UML
 -Image & music
+-PowerUp
 Nguyễn Vũ Hồng Phúc
 -Level
 -Brick
