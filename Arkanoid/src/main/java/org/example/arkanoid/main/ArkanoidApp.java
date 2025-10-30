@@ -11,22 +11,13 @@ import org.example.arkanoid.control.GameManager;
 import org.example.arkanoid.control.GameView;
 
 //Thêm import làm menu
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 
 // THÊM IMPORT NÀY
 import javafx.scene.input.KeyCode;
 
-//Thêm import làm ảnh
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 //Thêm import làm nhạc
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import java.net.URL;
+import org.example.arkanoid.control.AudioManager;
 //Thêm import Menu
 import org.example.arkanoid.control.MainMenuController;
 
@@ -50,8 +41,8 @@ public class ArkanoidApp extends Application {
     // Các thành phần cốt lõi của JavaFX
     private Stage primaryStage;
     private Scene scene;
+    private AudioManager audioManager;
 
-    private MediaPlayer backgroundMusicPlayer; //thêm biến làm nhạc
 
     @Override
     public void start(Stage primaryStage) {
@@ -62,8 +53,7 @@ public class ArkanoidApp extends Application {
         BorderPane root = new BorderPane();
         this.scene = new Scene(root, WIDTH, HEIGHT);
 
-        //2. Khởi tạo và thêm nhạc
-        initMusic();
+        this.audioManager = new AudioManager();
 
         // 3. Hiển thị Main Menu trước
         showMainMenu();
@@ -73,33 +63,6 @@ public class ArkanoidApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-    }
-
-    /**
-     * Tải tệp nhạc nền và thiết lập MediaPlayer.
-     */
-    private void initMusic() {
-        try {
-            // Đổi "background_music.mp3" thành tên tệp nhạc của bạn
-            String musicFile = "/Music/BrainRotRap.mp3";
-            URL resource = getClass().getResource(musicFile);
-
-            if (resource == null) {
-                System.err.println("Không tìm thấy tệp nhạc: " + musicFile);
-                return;
-            }
-
-            Media media = new Media(resource.toString());
-            backgroundMusicPlayer = new MediaPlayer(media);
-
-            // Cài đặt cho nhạc nền
-            backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Lặp lại vô hạn
-            backgroundMusicPlayer.setVolume(0.5); // Đặt âm lượng (0.0 đến 1.0)
-
-        } catch (Exception e) {
-            System.err.println("Lỗi khi tải nhạc: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -132,8 +95,8 @@ public class ArkanoidApp extends Application {
      */
     public void startGameScene() {
         // 1.Bắt đầu phát nhạc
-        if (backgroundMusicPlayer != null) {
-            backgroundMusicPlayer.play();
+        if (audioManager != null) {
+            audioManager.playBackgroundMusic();
         }
         // 2. Thiết lập Pane và Canvas cho game
         Pane gameRoot = new Pane();
