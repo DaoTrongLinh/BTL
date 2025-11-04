@@ -30,7 +30,7 @@ public class MainMenuController {
      * Được gọi khi người chơi bấm nút "Settings".
      */
     public void handleSettingsButton() {
-        // Tạm thời chưa làm gì
-        System.out.println("Settings clicked - no action yet.");
+        // Mở setting
+        arkanoidApp.showSettingsMenu();
     }
 }

@@ -20,6 +20,9 @@ import javafx.scene.input.KeyCode;
 import org.example.arkanoid.control.AudioManager;
 //Thêm import Menu
 import org.example.arkanoid.control.MainMenuController;
+//Thêm import SettingsMenu
+import org.example.arkanoid.control.SettingsMenuController;
+
 
 /**
  * Lớp Application chính của JavaFX.
@@ -32,7 +35,7 @@ public class ArkanoidApp extends Application {
     private static final int WIDTH = GameManager.WIDTH;
     private static final int HEIGHT = GameManager.HEIGHT;
 
-    // Các thành phần của game (đưa lên làm biến thành viên)
+    // Các thành phần của game
     private GameManager gameManager;
     private GameView gameView;
     private GraphicsContext gc;
@@ -48,17 +51,17 @@ public class ArkanoidApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
-        // 1. Tạo một Pane gốc (BorderPane) và Scene
+        // Tạo một Pane gốc (BorderPane) và Scene
         // Chúng ta sẽ dùng BorderPane để dễ dàng căn giữa menu
         BorderPane root = new BorderPane();
         this.scene = new Scene(root, WIDTH, HEIGHT);
 
         this.audioManager = new AudioManager();
 
-        // 3. Hiển thị Main Menu trước
+        //Hiển thị Main Menu trước
         showMainMenu();
 
-        // 4. Thiết lập Stage (Cửa sổ)
+        //Thiết lập Stage (Cửa sổ)
         primaryStage.setTitle("Arkanoid");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -68,46 +71,71 @@ public class ArkanoidApp extends Application {
     /**
      * Tạo và hiển thị Main Menu.
      */
-    private void showMainMenu() {
-        // 1. Tạo Controller, truyền 'this' (chính ArkanoidApp) vào
+    public void showMainMenu() {
+        // Tạo Controller, truyền ArkanoidApp vào
         MainMenuController controller = new MainMenuController(this);
 
-        // 2. Tạo View (MainMenu), truyền controller và kích thước vào
+        // Tạo View (MainMenu), truyền controller và kích thước vào
         MainMenu mainMenuView = new MainMenu(controller, WIDTH, HEIGHT);
 
-        // 3. Lấy root pane (BorderPane) từ MainMenu view
+        // Lấy root pane (BorderPane) từ MainMenu view
         BorderPane menuRoot = mainMenuView.createMenuRoot();
 
-        // 4. Đặt menu làm gốc của Scene
+        // Đặt menu làm gốc của Scene
         scene.setRoot(menuRoot);
 
-        // 5. Xóa các sự kiện input cũ (nếu có)
+        // Xóa các sự kiện input cũ (nếu có)
         scene.setOnMouseMoved(null);
         scene.setOnKeyPressed(null);
+        scene.setOnMouseClicked(null);
     }
 
+    /**
+     *Tạo và hiển thị Main Menu
+     */
+    public void showSettingsMenu() {
+        // Lấy trạng thái hiện tại
+        double currentVolume = audioManager.getVolume();
+
+        // Tạo Controller, truyền Stage và Audio vào
+        SettingsMenuController controller = new SettingsMenuController(this, audioManager);
+
+        // Tạo View, truyền trạng thái hiện tại vào
+        SettingsMenu settingsView = new SettingsMenu(controller,currentVolume);
+
+        // Lấy root pane
+        BorderPane settingsRoot = settingsView.createSettingsRoot();
+
+        // Đặt settings làm gốc của Scene
+        scene.setRoot(settingsRoot);
+
+        // Xóa các sự kiện input cũ
+        scene.setOnMouseMoved(null);
+        scene.setOnKeyPressed(null);
+        scene.setOnMouseClicked(null);
+    }
     /**
      * Khởi tạo và chuyển sang cảnh game.
      * Đây là toàn bộ logic cũ từ phương thức start() của bạn.
      */
     public void startGameScene() {
-        // 1.Bắt đầu phát nhạc
+        //Bắt đầu phát nhạc
         if (audioManager != null) {
             audioManager.playBackgroundMusic();
         }
-        // 2. Thiết lập Pane và Canvas cho game
+        //Thiết lập Pane và Canvas cho game
         Pane gameRoot = new Pane();
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         gameRoot.getChildren().add(canvas);
 
-        // Lấy GraphicsContext (cây cọ) từ Canvas
+        // Lấy GraphicsContext từ Canvas
         gc = canvas.getGraphicsContext2D();
 
-        // 3. Khởi tạo "Bộ não" và "Người vẽ"
+        // Khởi tạo "Bộ não" và "Người vẽ"
         gameManager = new GameManager();
         gameView = new GameView(gc);
 
-        // 4. Tạo Game Loop (Vòng lặp game)
+        // Tạo Game Loop (Vòng lặp game)
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -119,7 +147,7 @@ public class ArkanoidApp extends Application {
             }
         };
 
-        // 5. Gắn sự kiện input vào Scene cho game
+        // Gắn sự kiện input vào Scene cho game
         scene.setOnMouseMoved(event -> {
             if (gameManager != null) {
                 gameManager.movePaddle(event.getX());
@@ -138,13 +166,12 @@ public class ArkanoidApp extends Application {
             }
         });
 
-        // 6. ĐẶT CẢNH GAME LÀM GỐC (Đây là bước "chuyển cảnh")
+        // ĐẶT CẢNH GAME LÀM GỐC
         scene.setRoot(gameRoot);
 
-        // 7. Bắt đầu vòng lặp game
+        // Bắt đầu vòng lặp game
         gameLoop.start();
     }
-
     public static void main(String[] args) {
         launch(args);
     }

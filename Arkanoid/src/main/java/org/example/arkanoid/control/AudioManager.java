@@ -6,7 +6,6 @@ import java.net.URL;
 
 /**
  * Lớp chuyên dụng để quản lý tất cả Âm thanh trong game.
- * (Singleton Pattern có thể hữu ích ở đây, nhưng chúng ta hãy làm đơn giản trước).
  */
 public class AudioManager {
 
@@ -58,8 +57,24 @@ public class AudioManager {
         }
     }
 
-    // TODO: Bạn có thể thêm các hàm phát hiệu ứng âm thanh (SFX) ở đây
-    // public void playSoundEffect(String soundName) {
-    //    // Logic để tải và phát file .wav hoặc .mp3 ngắn
-    // }
+    /**
+     *
+     * @param volume gía trị từ 0.0-1.0
+     */
+    public void setVolume(double volume) {
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.setVolume(volume);
+        }
+    }
+
+    /**
+     *
+     * @return âm lượng hiện tại
+     */
+    public double getVolume() {
+        if (backgroundMusicPlayer != null) {
+            return backgroundMusicPlayer.getVolume();
+        }
+        return 0.5; // Trả về giá trị mặc định ban đầu
+    }
 }
