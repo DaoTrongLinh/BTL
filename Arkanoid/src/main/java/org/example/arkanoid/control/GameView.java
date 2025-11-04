@@ -166,14 +166,6 @@ public class GameView {
         if (gameOverImage != null) {
             // Vẽ ảnh 'gameOverImage' lên toàn màn hình
             gc.drawImage(gameOverImage, 0, 0, width, height);
-        } else {
-            // Dự phòng: Nếu ảnh lỗi, vẽ nền đen và chữ như cũ
-            gc.setFill(new Color(0, 0, 0, 0.7));
-            gc.fillRect(0, 0, width, height);
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setFill(Color.RED);
-            gc.setFont(new Font("Arial", 72));
-            gc.fillText("GAME OVER", width / 2, height / 2 - 40);
         }
 
         // 1. Vẽ một lớp nền đen mờ (cho đẹp)
@@ -182,17 +174,22 @@ public class GameView {
 
         // 2. Căn chữ ra giữa
         gc.setTextAlign(TextAlignment.CENTER);
-
-        // 3. Vẽ điểm số cuối cùng
+        // 3. Vẽ chữ "GAME OVER"
+        if (gameOverImage == null) {
+            gc.setFill(Color.RED);
+            gc.setFont(new Font("Arial", 72));
+            gc.fillText("GAME OVER", width / 2, height / 2 - 40);
+        }
+        // 4. Vẽ điểm số cuối cùng
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Arial", 36));
         gc.fillText("Final Score: " + finalScore, width / 2, height / 2 + 20);
 
-        // 4. Hướng dẫn quay về menu
+        // 5. Hướng dẫn quay về menu
         gc.setFont(new Font("Arial", 18));
         gc.fillText("Press ESC to Return to Menu", width / 2, height / 2 + 80);
 
-        // 5. Reset lại căn lề (quan trọng)
+        // 6. Reset lại căn lề
         gc.setTextAlign(TextAlignment.LEFT);
     }
 }
