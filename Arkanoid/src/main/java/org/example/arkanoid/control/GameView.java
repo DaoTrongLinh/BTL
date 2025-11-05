@@ -127,14 +127,14 @@ public class GameView {
             }
 
             // 7. Vẽ điểm số và mạng sống
-            renderGameInfo(manager.getScore(), manager.getLives());
+            renderGameInfo(manager.getScore(), manager.getLives(), manager.getCurrentLevel());
         }
     }
 
     /**
      * Vẽ thông tin game (Điểm, Mạng) lên màn hình.
      */
-    private void renderGameInfo(int score, int lives) {
+    private void renderGameInfo(int score, int lives, int level) {
         gc.setFill(Color.WHITE); // Đặt màu trắng
         gc.setFont(new Font("Arial", 20)); // Đặt font và cỡ chữ
 
@@ -143,6 +143,9 @@ public class GameView {
 
         // Vẽ mạng sống
         gc.fillText("Lives: " + lives, width - 80, 25); // Cách lề phải 80px
+
+        String levelText = "Level: " + level;
+        gc.fillText(levelText, width / 2 - 40, 25);
     }
 
     /**

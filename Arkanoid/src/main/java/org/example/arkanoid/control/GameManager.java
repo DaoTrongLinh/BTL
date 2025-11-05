@@ -31,15 +31,13 @@ public class GameManager {
     private int currentLevel;
     ;
 
-    // <<< THÊM MỚI >>>
     private AudioManager audioManager; // Thêm biến để lưu AudioManager
 
     // Trạng thái game
     private int score;
     private int lives;
-    private String gameState; // "PLAYING", "GAME_OVER", "WIN", "READY"
+    private String gameState; // "PLAYING", "GAME_OVER", "WIN", "READY", "PENALTY_READY", "PENALTY_PLAYING"
 
-    // <<< SỬA CONSTRUCTOR Ở ĐÂY >>>
     public GameManager(AudioManager audioManager) { // <-- Nhận AudioManager
         this.bricks = new ArrayList<>();
         this.powerUps = new ArrayList<>();
@@ -121,12 +119,54 @@ public class GameManager {
     }
 
     /**
+     * Kích hoạt chế độ Penalty.
+     * Được gọi bởi PenaltyPowerUp.
+     */
+    public void activatePenaltyMode() {
+        // 1. Dọn dẹp màn hình
+        bricks.clear();
+        bullets.clear();
+        powerUps.clear(); // Xóa các power-up khác đang rơi
+
+        // 2. Tạo thủ môn (gạch di động)
+        Brick penaltyBrick = new MovingBrick(WIDTH / 2.0 - 40, 100, 80, 20);
+        bricks.add(penaltyBrick);
+
+        // 3. Reset bóng và paddle (hàm này sẽ đặt gameState = "READY")
+        prepareNewBall();
+
+        // 4. Ghi đè trạng thái thành "PENALTY_READY"
+        gameState = "PENALTY_READY";
+    }
+
+    /**
+     * Xử lý khi sút hỏng Penalty.
+     * Tải lại level hiện tại.
+     */
+    private void failPenaltyShot() {
+        audioManager.playHitSound();
+        score -= 50;
+        if (score < 0) {
+            score = 0; // Đảm bảo điểm không bị âm
+        }
+        // Tải lại level hiện tại
+        loadLevel(currentLevel);
+    }
+
+    /**
      * Phương thức cập nhật logic game chính, được gọi mỗi frame.
      */
     public void updateGame() {
 
+        // Phải cập nhật gạch ngay cả khi đang "READY" (cho chế độ penalty)
+        if (gameState.equals("PENALTY_READY") || gameState.equals("PENALTY_PLAYING")) {
+            for (Brick brick : bricks) {
+                brick.update(); // Gọi hàm update() của MovingBrick
+            }
+        }
+
         // Logic mới dựa trên gameState
-        if (gameState.equals("PLAYING")) {
+        if (gameState.equals("PLAYING") || gameState.equals("PENALTY_PLAYING")) {
             // 1. Cập nhậcollisionHandler.handleBallPaddleCollision(ball, paddle);t vị trí bóng (CHỈ KHI ĐANG CHƠI)
             ball.update();
 
@@ -185,7 +225,7 @@ public class GameManager {
             // 5. Kiểm tra thắng
             checkWinCondition();
 
-        } else if (gameState.equals("READY")) {
+        } else if (gameState.equals("READY") || gameState.equals("PENALTY_READY")) {
             // Khi bóng đang "READY", BẮT BUỘC nó phải dính vào paddle
             ball.setCenterX(paddle.getX() + paddle.getWidth() / 2);
             ball.setCenterY(paddle.getY() - ball.getRadius()); // Đặt ngay trên paddle
@@ -211,31 +251,40 @@ public class GameManager {
             if (!brick.isDestroyed()) {
                 if (collisionHandler.handleBallBrickCollision(ball, brick)) {
                     // Hàm 'hit()' sẽ tự trừ độ bền và trả về 'true' nếu gạch bị vỡ
-
                     audioManager.playHitSound();
-
                     boolean wasDestroyed = brick.hit();
+
                     // Chỉ cộng điểm & thả power-up NẾU gạch BỊ VỠ
-                    if (wasDestroyed) {
-                        score += brick.getPoints();
+                    if (gameState.equals("PENALTY_PLAYING")) {
+                        // --- TRẠNG THÁI THẮNG PENALTY ---
+                        if (wasDestroyed) {
+                            System.out.println("PENALTY GOAL!");
+                            score += brick.getPoints(); // Thưởng điểm
+                            currentLevel++; // Tăng level
+                            loadLevel(currentLevel); // Tải level MỚI
+                        }
+                    } else {
+                        // --- TRẠNG THÁI GAME THƯỜNG ---
+                        if (wasDestroyed) {
+                            score += brick.getPoints();
+                            // Kích hoạt Power-up rơi ra
+                            // Tỉ lệ 20% rơi
+                            if (Math.random() < 0.2) {
+                                // (Khi bạn thêm power-up khác, bạn sẽ thêm logic chọn lựa ở đây)
+                                double puX = brick.getX() + (brick.getWidth() / 2) - 15;
+                                double puY = brick.getY();
+                                double powerUpType = Math.random(); // Số ngẫu nhiên 0.0 -> 1.0
 
-                        // Kích hoạt Power-up rơi ra
-                        // Tỉ lệ 20% rơi
-                        if (Math.random() < 0.2) {
-                            // (Khi bạn thêm power-up khác, bạn sẽ thêm logic chọn lựa ở đây)
-
-                            double puX = brick.getX() + (brick.getWidth() / 2) - 15;
-                            double puY = brick.getY();
-
-                            // 50/50 cơ hội nhận 1 trong 2
-                            if (Math.random() < 0.5) {
-                                // Chỉ thả Expand nếu paddle chưa to
-                                if (paddle.getWidth() == paddle.getOriginalWidth()) {
+                                if (powerUpType < 0.4 && paddle.getWidth() == paddle.getOriginalWidth()) {
+                                    // 40% cơ hội là Expand (nếu paddle chưa expand)
                                     powerUps.add(new ExpandPaddlePowerUp(puX, puY));
+                                } else if (powerUpType < 0.8) {
+                                    // 40% cơ hội là Laser
+                                    powerUps.add(new LaserPowerUp(puX, puY));
+                                } else {
+                                    // 20% cơ hội là Penalty
+                                    powerUps.add(new PenaltyPowerUp(puX, puY));
                                 }
-                            } else {
-                                // Thả Laser
-                                powerUps.add(new LaserPowerUp(puX, puY));
                             }
                         }
                     }
@@ -281,12 +330,25 @@ public class GameManager {
             ball.setDx(0);  // Phóng bóng
             ball.setDy(-5); // Phóng bóng
         }
+        else if (gameState.equals("PENALTY_READY")) {
+            gameState = "PENALTY_PLAYING";
+            ball.setDx(0);  // Bắn thẳng
+            ball.setDy(-5);
+        }
     }
 
     /**
      * Xử lý va chạm tường cho bóng (SỬA ĐỔI)
      */
     private void checkWallCollisions() {
+        if (gameState.equals("PENALTY_PLAYING")) {
+            // Nếu bóng chạm trái || trên || phải TRƯỚC khi chạm gạch -> THUA
+            if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= WIDTH || ball.getY() <= 0) {
+                failPenaltyShot();
+                return; // Dừng hàm ngay lập tức
+            }
+        }
+
         // Va chạm tường trái/phải
         if (ball.getX() <= 0 || ball.getX() + ball.getWidth() >= WIDTH) {
             ball.reverseDx();
@@ -360,6 +422,10 @@ public class GameManager {
 
     public int getLives() {
         return lives;
+    }
+
+    public int getCurrentLevel() {
+        return this.currentLevel;
     }
 
     public String getGameState() {
