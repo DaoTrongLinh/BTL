@@ -25,7 +25,7 @@ public class CollisionHandler {
             double ballCenterX = ball.getX() + ball.getWidth() / 2; // Dùng getWidth() vì ball là AABB
             double hitPosition = ballCenterX - paddleCenterX;
             double normalizedHitPosition = hitPosition / (paddle.getWidth() / 2);
-            double MAX_DX_SPEED = 7.0;
+            double MAX_DX_SPEED = 5.0;
             double newDx = normalizedHitPosition * MAX_DX_SPEED;
 
             ball.setDx(newDx);

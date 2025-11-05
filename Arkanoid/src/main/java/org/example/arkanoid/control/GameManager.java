@@ -268,7 +268,7 @@ public class GameManager {
     public void launchBall() {
         if (gameState.equals("READY")) {
             gameState = "PLAYING";
-            ball.setDx(5);  // Phóng bóng
+            ball.setDx(0);  // Phóng bóng thẳng
             ball.setDy(-5); // Phóng bóng
         }
     }
