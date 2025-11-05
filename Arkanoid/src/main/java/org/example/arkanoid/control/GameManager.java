@@ -127,7 +127,7 @@ public class GameManager {
 
         // Logic mới dựa trên gameState
         if (gameState.equals("PLAYING")) {
-            // 1. Cập nhật vị trí bóng (CHỈ KHI ĐANG CHƠI)
+            // 1. Cập nhậcollisionHandler.handleBallPaddleCollision(ball, paddle);t vị trí bóng (CHỈ KHI ĐANG CHƠI)
             ball.update();
 
             // 2. Cập nhật Power-ups
@@ -199,7 +199,9 @@ public class GameManager {
      */
     private void checkCollisions() {
         // 1. Va chạm Bóng với Thanh trượt
-        collisionHandler.handleBallPaddleCollision(ball, paddle);
+        if (collisionHandler.handleBallPaddleCollision(ball, paddle)) {
+            audioManager.playHitSound();
+        }
 
         // 2. Va chạm Bóng với Gạch
         Iterator<Brick> brickIterator = bricks.iterator();
@@ -209,6 +211,9 @@ public class GameManager {
             if (!brick.isDestroyed()) {
                 if (collisionHandler.handleBallBrickCollision(ball, brick)) {
                     // Hàm 'hit()' sẽ tự trừ độ bền và trả về 'true' nếu gạch bị vỡ
+
+                    audioManager.playHitSound();
+
                     boolean wasDestroyed = brick.hit();
                     // Chỉ cộng điểm & thả power-up NẾU gạch BỊ VỠ
                     if (wasDestroyed) {

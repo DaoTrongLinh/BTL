@@ -52,7 +52,7 @@ public class ArkanoidApp extends Application {
         this.primaryStage = primaryStage;
 
         // Tạo một Pane gốc (BorderPane) và Scene
-        // Chúng ta sẽ dùng BorderPane để dễ dàng căn giữa menu
+        //Dùng BorderPane để dễ dàng căn giữa menu
         BorderPane root = new BorderPane();
         this.scene = new Scene(root, WIDTH, HEIGHT);
 

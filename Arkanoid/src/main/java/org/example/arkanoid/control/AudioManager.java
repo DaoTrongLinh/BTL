@@ -1,5 +1,6 @@
 package org.example.arkanoid.control;
 
+import javafx.scene.media.AudioClip; //import làm âm thanh va chạm
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -12,8 +13,11 @@ public class AudioManager {
 
     private MediaPlayer backgroundMusicPlayer;
 
+    private AudioClip hitSound;
+
     public AudioManager() {
         initMusic();
+        initSoundEffects();
     }
 
     /**
@@ -38,6 +42,27 @@ public class AudioManager {
             System.err.println("Lỗi khi tải nhạc: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    // --- HÀM MỚI ĐỂ TẢI SFX ---
+    private void initSoundEffects() {
+        try {
+            // Thay đổi "hit_sound.wav" cho đúng với tên tệp của bạn
+            hitSound = loadSoundEffect("/Music/Hitsound.wav");
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tải hiệu ứng âm thanh: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    // --- HÀM HELPER ĐỂ TẢI AUDIOCLIP ---
+    private AudioClip loadSoundEffect(String resourcePath) {
+        URL resource = getClass().getResource(resourcePath);
+        if (resource == null) {
+            System.err.println("Không tìm thấy tệp SFX: " + resourcePath);
+            return null;
+        }
+        return new AudioClip(resource.toString());
     }
 
     /**
@@ -77,5 +102,11 @@ public class AudioManager {
             return backgroundMusicPlayer.getVolume();
         }
         return 0.5; // Trả về giá trị mặc định ban đầu
+    }
+
+    public void playHitSound() {
+        if (hitSound != null) {
+            hitSound.play();
+        }
     }
 }

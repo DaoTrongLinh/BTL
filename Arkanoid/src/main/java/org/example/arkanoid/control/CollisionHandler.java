@@ -13,9 +13,10 @@ import java.util.List;
 public class CollisionHandler {
 
     /**
-     * Xử lý va chạm giữa Bóng và Thanh trượt (ĐÃ NÂNG CẤP).
+     * Xử lý va chạm giữa Bóng và Thanh trượt (ĐÃ NÂNG CẤP)
+     * @return true nếu va chạm xảy ra, false nếu không
      */
-    public void handleBallPaddleCollision(Ball ball, Paddle paddle) {
+    public boolean handleBallPaddleCollision(Ball ball, Paddle paddle) {
         if (ball.getBounds().intersects(paddle.getBounds())) {
 
             ball.reverseDy();
@@ -29,7 +30,9 @@ public class CollisionHandler {
             double newDx = normalizedHitPosition * MAX_DX_SPEED;
 
             ball.setDx(newDx);
+            return true;
         }
+        return false;
     }
 
     /**
