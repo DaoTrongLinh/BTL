@@ -158,7 +158,35 @@ public class ArkanoidApp extends Application {
                 gameManager.launchBall();
             }
         });
+        scene.setOnKeyPressed(event -> {
+            if (gameManager == null) return; // Kiểm tra an toàn
 
+            // 1. Logic phím SPACE (Phóng bóng)
+            if (event.getCode() == KeyCode.SPACE) {
+                gameManager.launchBall();
+            }
+
+            // 2. THÊM MỚI: Logic phím ESC (Quay về Menu)
+            else if (event.getCode() == KeyCode.ESCAPE) {
+                // Lấy trạng thái game
+                String state = gameManager.getGameState();
+
+                // Chỉ hành động nếu đang ở màn hình Win hoặc Thua
+                if (state.equals("GAME_OVER") || state.equals("WIN")) {
+
+                    // Dừng vòng lặp game
+                    gameLoop.stop();
+
+                    // Dừng nhạc
+                    if (audioManager != null) {
+                        audioManager.stopBackgroundMusic();
+                    }
+
+                    // Quay về menu chính
+                    showMainMenu();
+                }
+            }
+        });
         scene.setOnMouseClicked(event -> {
             if (gameManager != null) {
                 gameManager.paddleShoot();
