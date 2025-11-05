@@ -28,12 +28,14 @@ public abstract class PowerUp extends GameObject {
 
     /**
      * Phương thức trừu tượng để áp dụng hiệu ứng lên thanh trượt (Paddle).
+     *
      * @param gameManager Thanh trượt của người chơi.
      */
     public abstract void applyEffect(GameManager gameManager);
 
     /**
      * Phương thức trừu tượng để gỡ bỏ hiệu ứng khỏi thanh trượt.
+     *
      * @param gameManager Thanh trượt của người chơi.
      */
     public abstract void removeEffect(GameManager gameManager);

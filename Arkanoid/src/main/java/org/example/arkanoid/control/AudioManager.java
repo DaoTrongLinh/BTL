@@ -2,6 +2,7 @@ package org.example.arkanoid.control;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+
 import java.net.URL;
 
 /**

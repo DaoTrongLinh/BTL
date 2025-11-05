@@ -35,7 +35,8 @@ public class CollisionHandler {
     /**
      * --- SỬA LOGIC VA CHẠM GẠCH TẠI ĐÂY ---
      * Xử lý va chạm giữa Bóng và một viên Gạch.
-     * @param ball Quả bóng
+     *
+     * @param ball  Quả bóng
      * @param brick Viên gạch
      * @return true nếu có va chạm, false nếu không.
      */
@@ -56,11 +57,9 @@ public class CollisionHandler {
 
             // 2. Tính toán độ "chồng lấn" (overlap)
             // (Nửa chiều rộng của cả hai) - (Khoảng cách giữa tâm của cả hai)
-            double overlapX = (ball.getWidth() / 2 + brick.getWidth() / 2)
-                    - Math.abs(ballCenterX - brickCenterX);
+            double overlapX = (ball.getWidth() / 2 + brick.getWidth() / 2) - Math.abs(ballCenterX - brickCenterX);
 
-            double overlapY = (ball.getHeight() / 2 + brick.getHeight() / 2)
-                    - Math.abs(ballCenterY - brickCenterY);
+            double overlapY = (ball.getHeight() / 2 + brick.getHeight() / 2) - Math.abs(ballCenterY - brickCenterY);
 
             // 3. Quyết định hướng nảy
             // Nếu overlapX < overlapY, va chạm xảy ra ở CẠNH BÊN (trái/phải).
@@ -97,6 +96,7 @@ public class CollisionHandler {
 
     /**
      * Xử lý va chạm VẬT LÝ giữa MỘT viên đạn và TẤT CẢ các viên gạch.
+     *
      * @param bullet Viên đạn đang kiểm tra.
      * @param bricks Danh sách tất cả gạch.
      * @return Viên gạch bị trúng (để GameManager xử lý), hoặc null nếu không trúng.

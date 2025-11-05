@@ -18,6 +18,7 @@ public class SettingsMenuController {
 
     /**
      * Được gọi khi Slider âm lượng thay đổi giá trị.
+     *
      * @param volume Giá trị mới từ Slider (0.0 đến 1.0)
      */
     public void handleVolumeChange(double volume) {

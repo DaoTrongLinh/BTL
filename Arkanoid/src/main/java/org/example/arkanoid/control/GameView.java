@@ -57,6 +57,7 @@ public class GameView {
 
     /**
      * Phương thức render chính, được gọi mỗi frame bởi AnimationTimer.
+     *
      * @param manager GameManager chứa tất cả các đối tượng game.
      */
     public void render(GameManager manager) {
@@ -127,6 +128,7 @@ public class GameView {
             renderGameInfo(manager.getScore(), manager.getLives());
         }
     }
+
     /**
      * Vẽ thông tin game (Điểm, Mạng) lên màn hình.
      */
@@ -142,7 +144,7 @@ public class GameView {
     }
 
     /**
-     *Vẽ màn hình WIN
+     * Vẽ màn hình WIN
      */
     private void renderWinScreen(int finalScore) {
         if (winImage != null) {
@@ -158,6 +160,7 @@ public class GameView {
             gc.fillText("YOU WIN!", width / 2, height / 2 - 40);
         }
     }
+
     /**
      * Vẽ màn hình GAME OVER
      */

@@ -37,6 +37,7 @@ public class Bullet extends MovableObject {
 
     /**
      * Phương thức tiện ích để kiểm tra xem đạn đã bay ra khỏi màn hình chưa
+     *
      * @param screenHeight Chiều cao màn hình (từ GameManager.HEIGHT)
      * @return true nếu đạn ra khỏi màn hình
      */

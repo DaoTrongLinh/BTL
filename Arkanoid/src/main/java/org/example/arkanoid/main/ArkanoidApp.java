@@ -23,6 +23,7 @@ import org.example.arkanoid.control.MainMenuController;
 //Thêm import SettingsMenu
 import org.example.arkanoid.control.SettingsMenuController;
 import org.example.arkanoid.main.SettingsMenu;
+
 /**
  * Lớp Application chính của JavaFX.
  * Chịu trách nhiệm thiết lập cửa sổ (Stage), Scene
@@ -84,13 +85,11 @@ public class ArkanoidApp extends Application {
         scene.setRoot(menuRoot);
 
         // Xóa các sự kiện input cũ (nếu có)
-        scene.setOnMouseMoved(null);
-        scene.setOnKeyPressed(null);
-        scene.setOnMouseClicked(null);
+        clearGameInputHandlers(); // <<< GỌI HÀM DỌN DẸP MỚI >>>
     }
 
     /**
-     *Tạo và hiển thị Main Menu
+     * Tạo và hiển thị Main Menu
      */
     public void showSettingsMenu() {
         // Lấy trạng thái hiện tại
@@ -100,7 +99,7 @@ public class ArkanoidApp extends Application {
         SettingsMenuController controller = new SettingsMenuController(this, audioManager);
 
         // Tạo View, truyền trạng thái hiện tại vào
-        SettingsMenu settingsView = new SettingsMenu(controller,currentVolume);
+        SettingsMenu settingsView = new SettingsMenu(controller, currentVolume);
 
         // Lấy root pane
         BorderPane settingsRoot = settingsView.createSettingsRoot();
@@ -109,13 +108,11 @@ public class ArkanoidApp extends Application {
         scene.setRoot(settingsRoot);
 
         // Xóa các sự kiện input cũ
-        scene.setOnMouseMoved(null);
-        scene.setOnKeyPressed(null);
-        scene.setOnMouseClicked(null);
+        clearGameInputHandlers(); // <<< GỌI HÀM DỌN DẸP MỚI >>>
     }
+
     /**
      * Khởi tạo và chuyển sang cảnh game.
-     * Đây là toàn bộ logic cũ từ phương thức start() của bạn.
      */
     public void startGameScene() {
         //Bắt đầu phát nhạc
@@ -131,7 +128,8 @@ public class ArkanoidApp extends Application {
         gc = canvas.getGraphicsContext2D();
 
         // Khởi tạo "Bộ não" và "Người vẽ"
-        gameManager = new GameManager();
+        // <<< SỬA LỖI 1: Cần truyền audioManager vào GameManager >>>
+        gameManager = new GameManager(audioManager);
         gameView = new GameView(gc);
 
         // Tạo Game Loop (Vòng lặp game)
@@ -153,11 +151,15 @@ public class ArkanoidApp extends Application {
             }
         });
 
-        scene.setOnKeyPressed(event -> {
-            if (gameManager != null && event.getCode() == KeyCode.SPACE) {
-                gameManager.launchBall();
+        // <<< SỬA LỖI 2 (CHÍNH): THÊM SỰ KIỆN NÀY ĐỂ PADDLE KHÔNG BỊ ĐƠ >>>
+        scene.setOnMouseDragged(event -> {
+            if (gameManager != null) {
+                gameManager.movePaddle(event.getX());
             }
         });
+
+        // <<< SỬA LỖI 3: GỘP 2 HÀM KEYPRESSED LẠI >>>
+        // (Xóa hàm setOnKeyPressed chỉ có SPACE)
         scene.setOnKeyPressed(event -> {
             if (gameManager == null) return; // Kiểm tra an toàn
 
@@ -166,32 +168,27 @@ public class ArkanoidApp extends Application {
                 gameManager.launchBall();
             }
 
-            // 2. THÊM MỚI: Logic phím ESC (Quay về Menu)
+            // 2. Logic phím ESC (Quay về Menu)
             else if (event.getCode() == KeyCode.ESCAPE) {
-                // Lấy trạng thái game
                 String state = gameManager.getGameState();
-
-                // Chỉ hành động nếu đang ở màn hình Win hoặc Thua
                 if (state.equals("GAME_OVER") || state.equals("WIN")) {
-
-                    // Dừng vòng lặp game
                     gameLoop.stop();
-
-                    // Dừng nhạc
                     if (audioManager != null) {
                         audioManager.stopBackgroundMusic();
                     }
-
-                    // Quay về menu chính
                     showMainMenu();
                 }
             }
         });
-        scene.setOnMouseClicked(event -> {
+
+        // (Khuyến nghị: Đổi 'Clicked' thành 'Pressed' để bắn nhanh hơn)
+        scene.setOnMousePressed(event -> {
             if (gameManager != null) {
                 gameManager.paddleShoot();
             }
         });
+        // Xóa Clicked đi vì đã dùng Pressed
+        scene.setOnMouseClicked(null);
 
         // ĐẶT CẢNH GAME LÀM GỐC
         scene.setRoot(gameRoot);
@@ -199,6 +196,19 @@ public class ArkanoidApp extends Application {
         // Bắt đầu vòng lặp game
         gameLoop.start();
     }
+
+    /**
+     * <<< THÊM HÀM MỚI NÀY >>>
+     * Dọn dẹp TẤT CẢ các sự kiện input của game.
+     */
+    private void clearGameInputHandlers() {
+        scene.setOnMouseMoved(null);
+        scene.setOnMouseDragged(null); // <-- Thêm dọn dẹp
+        scene.setOnMousePressed(null); // <-- Thêm dọn dẹp
+        scene.setOnMouseClicked(null);
+        scene.setOnKeyPressed(null);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

@@ -26,6 +26,7 @@ public abstract class GameObject {
 
     /**
      * Phương thức trừu tượng để vẽ đối tượng lên màn hình.
+     *
      * @param gc GraphicsContext của Canvas để vẽ.
      */
     public abstract void render(GraphicsContext gc);
@@ -33,6 +34,7 @@ public abstract class GameObject {
     /**
      * Lấy hình chữ nhật bao quanh đối tượng.
      * Rất hữu ích cho việc kiểm tra va chạm.
+     *
      * @return một đối tượng Rectangle2D đại diện cho biên của GameObject.
      */
     public Rectangle2D getBounds() {
@@ -47,11 +49,27 @@ public abstract class GameObject {
     }
 
     // Getters và Setters cơ bản
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
+    public double getX() {
+        return x;
+    }
 
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
+    public double getY() {
+        return y;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
 }

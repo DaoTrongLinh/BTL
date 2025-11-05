@@ -19,10 +19,11 @@ public class Level {
 
     /**
      * Tải một màn chơi từ một file resource.
+     *
      * @param resourcePath Đường dẫn đến file level (ví dụ: "/levels/level1.txt")
-     * @param screenWidth Chiều rộng màn chơi (từ GameManager)
-     * @param startX Lề trái
-     * @param startY Lề trên
+     * @param screenWidth  Chiều rộng màn chơi (từ GameManager)
+     * @param startX       Lề trái
+     * @param startY       Lề trên
      * @return Một danh sách các viên gạch cho màn chơi đó.
      */
     public List<Brick> loadLevel(String resourcePath, double screenWidth, double startX, double startY) {
@@ -32,8 +33,7 @@ public class Level {
         int numCols = 0;
 
         // --- Đọc file và lưu layout ---
-        try (InputStream is = getClass().getResourceAsStream(resourcePath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+        try (InputStream is = getClass().getResourceAsStream(resourcePath); BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
             if (is == null) {
                 System.err.println("Không thể tìm thấy file level: " + resourcePath);

@@ -1,6 +1,7 @@
 package org.example.arkanoid.control;
 
 import org.example.arkanoid.object.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -27,17 +28,23 @@ public class GameManager {
     // Các lớp xử lý
     private CollisionHandler collisionHandler;
     private Level levelLoader;
-    private int currentLevel;;
+    private int currentLevel;
+    ;
+
+    // <<< THÊM MỚI >>>
+    private AudioManager audioManager; // Thêm biến để lưu AudioManager
 
     // Trạng thái game
     private int score;
     private int lives;
     private String gameState; // "PLAYING", "GAME_OVER", "WIN", "READY"
 
-    public GameManager() {
+    // <<< SỬA CONSTRUCTOR Ở ĐÂY >>>
+    public GameManager(AudioManager audioManager) { // <-- Nhận AudioManager
         this.bricks = new ArrayList<>();
         this.powerUps = new ArrayList<>();
         this.bullets = new ArrayList<>();
+        this.audioManager = audioManager; // <-- Lưu nó lại
 
         // Khởi tạo CollisionHandler
         this.collisionHandler = new CollisionHandler();
@@ -64,7 +71,6 @@ public class GameManager {
 
     /**
      * Tải một màn chơi cụ thể.
-     * @param levelNumber Số thứ tự của màn chơi.
      */
     private void loadLevel(int levelNumber) {
         // Dọn dẹp màn chơi cũ
@@ -111,7 +117,6 @@ public class GameManager {
 
                 lastShotTime = currentTime; // Cập nhật thời gian bắn cuối
             }
-            // (Bạn có thể thêm âm thanh bắn ở đây)
         }
     }
 
@@ -268,7 +273,7 @@ public class GameManager {
     public void launchBall() {
         if (gameState.equals("READY")) {
             gameState = "PLAYING";
-            ball.setDx(0);  // Phóng bóng thẳng
+            ball.setDx(0);  // Phóng bóng
             ball.setDy(-5); // Phóng bóng
         }
     }
@@ -324,12 +329,35 @@ public class GameManager {
     // --- GETTERS ---
     // GameView sẽ dùng các getters này để VẼ đối tượng
 
-    public Paddle getPaddle() { return paddle; }
-    public Ball getBall() { return ball; }
-    public List<Brick> getBricks() { return bricks; }
-    public List<PowerUp> getPowerUps() { return powerUps; }
-    public List<Bullet> getBullets() { return this.bullets; }
-    public int getScore() { return score; }
-    public int getLives() { return lives; }
-    public String getGameState() { return gameState; }
+    public Paddle getPaddle() {
+        return paddle;
+    }
+
+    public Ball getBall() {
+        return ball;
+    }
+
+    public List<Brick> getBricks() {
+        return bricks;
+    }
+
+    public List<PowerUp> getPowerUps() {
+        return powerUps;
+    }
+
+    public List<Bullet> getBullets() {
+        return this.bullets;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public String getGameState() {
+        return gameState;
+    }
 }

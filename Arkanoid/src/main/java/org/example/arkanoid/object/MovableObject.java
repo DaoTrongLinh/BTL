@@ -23,12 +23,27 @@ public abstract class MovableObject extends GameObject {
     }
 
     // Getters và Setters cho vận tốc
-    public double getDx() { return dx; }
-    public double getDy() { return dy; }
+    public double getDx() {
+        return dx;
+    }
 
-    public void setDx(double dx) { this.dx = dx; }
-    public void setDy(double dy) { this.dy = dy; }
+    public double getDy() {
+        return dy;
+    }
 
-    public void reverseDx() { this.dx = -this.dx; }
-    public void reverseDy() { this.dy = -this.dy; }
+    public void setDx(double dx) {
+        this.dx = dx;
+    }
+
+    public void setDy(double dy) {
+        this.dy = dy;
+    }
+
+    public void reverseDx() {
+        this.dx = -this.dx;
+    }
+
+    public void reverseDy() {
+        this.dy = -this.dy;
+    }
 }

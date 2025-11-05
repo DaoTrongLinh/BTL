@@ -30,6 +30,7 @@ public abstract class Brick extends GameObject {
     /**
      * Xử lý khi gạch bị bóng va chạm.
      * Trừ 1 'hit' (độ bền).
+     *
      * @return true nếu gạch bị phá hủy (hết 'hits'), false nếu chỉ bị hư hại.
      */
     public boolean hit() {
@@ -47,6 +48,7 @@ public abstract class Brick extends GameObject {
 
     /**
      * Lấy số điểm mà viên gạch này mang lại.
+     *
      * @return số điểm.
      */
     public int getPoints() {
