@@ -22,8 +22,7 @@ import org.example.arkanoid.control.AudioManager;
 import org.example.arkanoid.control.MainMenuController;
 //Thêm import SettingsMenu
 import org.example.arkanoid.control.SettingsMenuController;
-
-
+import org.example.arkanoid.main.SettingsMenu;
 /**
  * Lớp Application chính của JavaFX.
  * Chịu trách nhiệm thiết lập cửa sổ (Stage), Scene
