@@ -23,7 +23,7 @@ import org.example.arkanoid.control.MainMenuController;
 //Thêm import SettingsMenu
 import org.example.arkanoid.control.SettingsMenuController;
 import org.example.arkanoid.main.SettingsMenu;
-
+import javafx.scene.shape.Rectangle;
 /**
  * Lớp Application chính của JavaFX.
  * Chịu trách nhiệm thiết lập cửa sổ (Stage), Scene
@@ -128,7 +128,6 @@ public class ArkanoidApp extends Application {
         gc = canvas.getGraphicsContext2D();
 
         // Khởi tạo "Bộ não" và "Người vẽ"
-        // <<< SỬA LỖI 1: Cần truyền audioManager vào GameManager >>>
         gameManager = new GameManager(audioManager);
         gameView = new GameView(gc);
 
@@ -181,15 +180,45 @@ public class ArkanoidApp extends Application {
             }
         });
 
-        // (Khuyến nghị: Đổi 'Clicked' thành 'Pressed' để bắn nhanh hơn)
-        scene.setOnMousePressed(event -> {
-            if (gameManager != null) {
+
+        scene.setOnMouseClicked(event -> {
+            if (gameManager == null) return;
+
+            // Lấy trạng thái game hiện tại
+            String state = gameManager.getGameState();
+
+            if (state.equals("PLAYING")) {
+                // 1. Nếu đang chơi: Click là để bắn
                 gameManager.paddleShoot();
+
+            } else if (state.equals("GAME_OVER") || state.equals("WIN")) {
+                // 2. Nếu đã Win/Thua: Click là để kiểm tra nút
+
+                // Lấy tọa độ 2 nút từ GameView
+                Rectangle escBounds = gameView.getEscButtonBounds();
+                Rectangle rankBounds = gameView.getRankButtonBounds();
+
+                // Lấy tọa độ chuột
+                double mouseX = event.getX();
+                double mouseY = event.getY();
+
+                // Kiểm tra click vào nút "ESC"
+                if (escBounds != null && escBounds.contains(mouseX, mouseY)) {
+
+                    // Logic này y hệt như khi bấm phím ESC
+                    gameLoop.stop();
+                    if (audioManager != null) {
+                        audioManager.stopBackgroundMusic();
+                    }
+                    showMainMenu();
+                }
+                //Kiểm tra click vào nút "Rank"
+                else if (rankBounds != null && rankBounds.contains(mouseX, mouseY)) {
+                    // Hiện tại chưa làm gì, chỉ in ra console
+                    System.out.println("Nút RANK đã được click!");
+                }
             }
         });
-        // Xóa Clicked đi vì đã dùng Pressed
-        scene.setOnMouseClicked(null);
-
         // ĐẶT CẢNH GAME LÀM GỐC
         scene.setRoot(gameRoot);
 
@@ -198,7 +227,6 @@ public class ArkanoidApp extends Application {
     }
 
     /**
-     * <<< THÊM HÀM MỚI NÀY >>>
      * Dọn dẹp TẤT CẢ các sự kiện input của game.
      */
     private void clearGameInputHandlers() {

@@ -10,7 +10,7 @@ import org.example.arkanoid.object.PowerUp;
 import javafx.scene.image.Image; //import để thêm ảnh
 
 import javafx.scene.text.TextAlignment; //import để thêm màn hình endgame
-
+import javafx.scene.shape.Rectangle;
 /**
  * Chịu trách nhiệm cho tất cả việc VẼ lên màn hình.
  * Nó lấy dữ liệu từ GameManager và render chúng lên Canvas.
@@ -21,9 +21,11 @@ public class GameView {
     private double width;
     private double height;
 
-    private Image backgroundImage; // <-- BIẾN MỚI ĐỂ LƯU ẢNH NỀN
+    private Image backgroundImage; // BIẾN MỚI ĐỂ LƯU ẢNH NỀN
     private Image gameOverImage; // Biến để lưu ảnh kết thúc
     private Image winImage; //Biến để lưu ảnh lúc thắng
+    private Rectangle escButtonBounds;
+    private Rectangle rankButtonBounds;
 
     public GameView(GraphicsContext gc) {
         this.gc = gc;
@@ -133,7 +135,7 @@ public class GameView {
      * Vẽ thông tin game (Điểm, Mạng) lên màn hình.
      */
     private void renderGameInfo(int score, int lives) {
-        gc.setFill(Color.WHITE); // Đặt màu trắng để nổi bật
+        gc.setFill(Color.WHITE); // Đặt màu trắng
         gc.setFont(new Font("Arial", 20)); // Đặt font và cỡ chữ
 
         // Vẽ điểm
@@ -159,6 +161,22 @@ public class GameView {
             gc.setFont(new Font("Arial", 72));
             gc.fillText("YOU WIN!", width / 2, height / 2 - 40);
         }
+            gc.setFill(new Color(0, 0, 0, 0.5)); // Đen mờ 50%
+            gc.fillRect(0, height / 2 - 30, width, 250); // Một dải ở giữa
+
+            //Căn chữ ra giữa
+            gc.setTextAlign(TextAlignment.CENTER);
+
+            //Vẽ điểm số cuối cùng
+            gc.setFill(Color.WHITE);
+            gc.setFont(new Font("Arial", 36));
+            gc.fillText("Final Score: " + finalScore, width / 2, height / 2 + 20);
+
+            //Vẽ các nút
+                drawEndGameOptions(height / 2 + 60); // Gọi hàm mới
+
+            //Reset lại căn lề
+                gc.setTextAlign(TextAlignment.LEFT);
     }
 
     /**
@@ -171,28 +189,75 @@ public class GameView {
             gc.drawImage(gameOverImage, 0, 0, width, height);
         }
 
-        // 1. Vẽ một lớp nền đen mờ (cho đẹp)
+        // Vẽ một lớp nền đen mờ (cho đẹp)
         gc.setFill(new Color(0, 0, 0, 0.7)); // Đen, mờ 70%
         gc.fillRect(0, 0, width, height);
 
-        // 2. Căn chữ ra giữa
+        // Căn chữ ra giữa
         gc.setTextAlign(TextAlignment.CENTER);
-        // 3. Vẽ chữ "GAME OVER"
+        // Vẽ chữ "GAME OVER"
         if (gameOverImage == null) {
             gc.setFill(Color.RED);
             gc.setFont(new Font("Arial", 72));
             gc.fillText("GAME OVER", width / 2, height / 2 - 40);
         }
-        // 4. Vẽ điểm số cuối cùng
+        // Vẽ điểm số cuối cùng
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Arial", 36));
         gc.fillText("Final Score: " + finalScore, width / 2, height / 2 + 20);
 
-        // 5. Hướng dẫn quay về menu
+        // Hướng dẫn quay về menu
         gc.setFont(new Font("Arial", 18));
-        gc.fillText("Press ESC to Return to Menu", width / 2, height / 2 + 80);
+        drawEndGameOptions(height / 2 + 60);
 
-        // 6. Reset lại căn lề
+        // Reset lại căn lề
         gc.setTextAlign(TextAlignment.LEFT);
+    }
+    /**
+     * THÊM MỚI: Hàm trợ giúp để vẽ các tùy chọn cuối game
+     */
+    private void drawEndGameOptions(double startY) {
+        double btnWidth = 200;
+        double btnHeight = 40;
+        double spacing = 15;
+        double centerX = width / 2;
+
+        // Nút "ESC to Back"
+        double btn1Y = startY;
+        double btn1X = centerX - btnWidth / 2;
+        //  Lưu tọa độ nút
+        this.escButtonBounds = new Rectangle(btn1X, btn1Y, btnWidth, btnHeight);
+        // Vẽ nền nút
+        gc.setFill(new Color(0.2, 0.2, 0.2, 0.8));
+        gc.fillRoundRect(btn1X, btn1Y, btnWidth, btnHeight, 15, 15); // Góc bo tròn
+
+        // Vẽ chữ
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("Arial", 18));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.fillText("ESC to Back", centerX, btn1Y + 27); // Căn Y thủ công
+
+        // Nút "Rank"
+        double btn2Y = btn1Y + btnHeight + spacing;
+        double btn2X = centerX - btnWidth / 2;
+        //Lưu lại tọa độ nút
+        this.rankButtonBounds = new Rectangle(btn2X, btn2Y, btnWidth, btnHeight);
+        // Vẽ nền nút
+        gc.setFill(new Color(0.2, 0.2, 0.2, 0.8));
+        gc.fillRoundRect(btn2X, btn2Y, btnWidth, btnHeight, 15, 15);
+
+        // Vẽ chữ
+        gc.setFill(Color.WHITE);
+        gc.fillText("Rank( chua co gi )", centerX, btn2Y + 27);
+
+        // Reset lại căn lề (quan trọng)
+        gc.setTextAlign(TextAlignment.LEFT);
+    }
+    public Rectangle getEscButtonBounds() {
+        return escButtonBounds;
+    }
+
+    public Rectangle getRankButtonBounds() {
+        return rankButtonBounds;
     }
 }

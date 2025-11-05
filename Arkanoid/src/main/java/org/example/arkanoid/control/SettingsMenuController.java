@@ -1,7 +1,6 @@
 package org.example.arkanoid.control;
 
 import org.example.arkanoid.main.ArkanoidApp;
-
 /**
  * Controller cho màn hình Cài đặt.
  * Xử lý logic cho Slider âm lượng, CheckBox toàn màn hình và nút Quay lại.
@@ -22,6 +21,7 @@ public class SettingsMenuController {
      * @param volume Giá trị mới từ Slider (0.0 đến 1.0)
      */
     public void handleVolumeChange(double volume) {
+
         audioManager.setVolume(volume);
     }
 
