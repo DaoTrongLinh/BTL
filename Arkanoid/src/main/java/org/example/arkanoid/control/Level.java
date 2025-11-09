@@ -3,6 +3,7 @@ package org.example.arkanoid.control;
 import org.example.arkanoid.object.Brick;
 import org.example.arkanoid.object.NormalBrick;
 import org.example.arkanoid.object.StrongBrick;
+import org.example.arkanoid.object.InvisibleBrick;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,6 +85,9 @@ public class Level {
                             break;
                         case "2":
                             bricks.add(new StrongBrick(brickX, brickY, brickWidth, brickHeight));
+                            break;
+                        case "3":
+                            bricks.add(new InvisibleBrick(brickX, brickY, brickWidth, brickHeight));
                             break;
                         //  có thể thêm các case khác ở đây
                     }
