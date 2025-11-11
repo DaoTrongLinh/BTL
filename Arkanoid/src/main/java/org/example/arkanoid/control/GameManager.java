@@ -126,7 +126,7 @@ public class GameManager {
         // 1. Dọn dẹp màn hình
         bricks.clear();
         bullets.clear();
-        powerUps.clear(); // Xóa các power-up khác đang rơi
+        // powerUps.clear(); // <<< SỬA LỖI 1: Dòng này đã bị xóa ở lần trước (tốt!)
 
         // 2. Tạo thủ môn (gạch di động)
         Brick penaltyBrick = new MovingBrick(WIDTH / 2.0 - 40, 100, 80, 20);
@@ -180,7 +180,7 @@ public class GameManager {
 
                 //  Kiểm tra va chạm với Paddle
                 if (pu.intersects(paddle)) {
-                    pu.applyEffect(this); // Áp dụng hiệu ứng (làm paddle to ra)
+                    pu.applyEffect(this); // Áp dụng hiệu ứng
                     powerUpIterator.remove(); // Xóa power-up khỏi danh sách
                 }
                 //  Dọn dẹp power-up nếu rơi ra khỏi màn hình
@@ -244,6 +244,10 @@ public class GameManager {
         }
 
         // 2. Va chạm Bóng với Gạch
+
+        // <<< SỬA LỖI 2: THÊM BIẾN CỜ NÀY >>>
+        boolean loadNextLevel = false;
+
         Iterator<Brick> brickIterator = bricks.iterator();
         while (brickIterator.hasNext()) {
             Brick brick = brickIterator.next();
@@ -261,28 +265,26 @@ public class GameManager {
                             System.out.println("PENALTY GOAL!");
                             score += brick.getPoints(); // Thưởng điểm
                             currentLevel++; // Tăng level
-                            loadLevel(currentLevel); // Tải level MỚI
+
+                            // <<< SỬA LỖI 2: KHÔNG GỌI loadLevel NGAY LẬP TỨC >>>
+                            // loadLevel(currentLevel); // <<< XÓA DÒNG NÀY
+                            loadNextLevel = true; // <<< THAY BẰNG DÒNG NÀY
                         }
                     } else {
                         // --- TRẠNG THÁI GAME THƯỜNG ---
                         if (wasDestroyed) {
                             score += brick.getPoints();
                             // Kích hoạt Power-up rơi ra
-                            // Tỉ lệ 20% rơi
                             if (Math.random() < 0.2) {
-                                // (Khi bạn thêm power-up khác, bạn sẽ thêm logic chọn lựa ở đây)
                                 double puX = brick.getX() + (brick.getWidth() / 2) - 15;
                                 double puY = brick.getY();
-                                double powerUpType = Math.random(); // Số ngẫu nhiên 0.0 -> 1.0
+                                double powerUpType = Math.random();
 
                                 if (powerUpType < 0.4 && paddle.getWidth() == paddle.getOriginalWidth()) {
-                                    // 40% cơ hội là Expand (nếu paddle chưa expand)
                                     powerUps.add(new ExpandPaddlePowerUp(puX, puY));
                                 } else if (powerUpType < 0.8) {
-                                    // 40% cơ hội là Laser
                                     powerUps.add(new LaserPowerUp(puX, puY));
                                 } else {
-                                    // 20% cơ hội là Penalty
                                     powerUps.add(new PenaltyPowerUp(puX, puY));
                                 }
                             }
@@ -290,6 +292,11 @@ public class GameManager {
                     }
                 }
             }
+        } // <<< VÒNG LẶP KẾT THÚC TẠI ĐÂY >>>
+
+        // <<< SỬA LỖI 2: TẢI LEVEL SAU KHI VÒNG LẶP ĐÃ XONG >>>
+        if (loadNextLevel) {
+            loadLevel(currentLevel); // Tải level mới một cách an toàn
         }
     }
 
