@@ -24,12 +24,17 @@ public class GameManager {
     private List<Brick> bricks;
     private List<PowerUp> powerUps; // Danh sách power-up đang rơi
     private List<Bullet> bullets;
+    private List<Brick> originalBricksBackup = new ArrayList<>();
 
     // Các lớp xử lý
     private CollisionHandler collisionHandler;
     private Level levelLoader;
     private int currentLevel;
-    ;
+    /**
+     * Cờ báo hiệu cần kích hoạt Penalty Mode.
+     * Dùng để tránh lỗi ConcurrentModificationException.
+     */
+    private boolean activatePenaltyModePending = false;
 
     private AudioManager audioManager; // Thêm biến để lưu AudioManager
 
@@ -49,6 +54,13 @@ public class GameManager {
         this.levelLoader = new Level();
 
         startGame();
+    }
+
+    /**
+     * Được gọi bởi PenaltyPowerUp để yêu cầu kích hoạt Penalty.
+     */
+    public void setPenaltyModePending() {
+        this.activatePenaltyModePending = true;
     }
 
     /**
@@ -123,10 +135,12 @@ public class GameManager {
      * Được gọi bởi PenaltyPowerUp.
      */
     public void activatePenaltyMode() {
+        this.originalBricksBackup.clear();
+        this.originalBricksBackup.addAll(this.bricks);
         // 1. Dọn dẹp màn hình
         bricks.clear();
         bullets.clear();
-        // powerUps.clear(); // <<< SỬA LỖI 1: Dòng này đã bị xóa ở lần trước (tốt!)
+        powerUps.clear();
 
         // 2. Tạo thủ môn (gạch di động)
         Brick penaltyBrick = new MovingBrick(WIDTH / 2.0 - 40, 100, 80, 20);
@@ -145,12 +159,11 @@ public class GameManager {
      */
     private void failPenaltyShot() {
         audioManager.playHitSound();
-        score -= 50;
-        if (score < 0) {
-            score = 0; // Đảm bảo điểm không bị âm
-        }
+        this.bricks.clear();
+        this.bricks.addAll(this.originalBricksBackup);
+        this.originalBricksBackup.clear();
         // Tải lại level hiện tại
-        loadLevel(currentLevel);
+        prepareNewBall();
     }
 
     /**
@@ -187,6 +200,15 @@ public class GameManager {
                 else if (pu.getY() > HEIGHT) {
                     powerUpIterator.remove(); // Xóa power-up
                 }
+            }
+
+            // Kiểm tra cờ SAU KHI vòng lặp đã kết thúc
+            if (activatePenaltyModePending) {
+                activatePenaltyMode(); // Kích hoạt Penalty
+                activatePenaltyModePending = false; // Reset cờ
+
+                // Dừng hàm update ngay lập tức vì trạng thái game (và các danh sách) đã thay đổi
+                return;
             }
 
             Iterator<Bullet> bulletIterator = bullets.iterator();
@@ -245,8 +267,8 @@ public class GameManager {
 
         // 2. Va chạm Bóng với Gạch
 
-        // <<< SỬA LỖI 2: THÊM BIẾN CỜ NÀY >>>
-        boolean loadNextLevel = false;
+        // <<< SỬA LỖI : THÊM BIẾN CỜ NÀY >>>
+        boolean penaltyWon = false;
 
         Iterator<Brick> brickIterator = bricks.iterator();
         while (brickIterator.hasNext()) {
@@ -266,15 +288,15 @@ public class GameManager {
                             score += brick.getPoints(); // Thưởng điểm
                             currentLevel++; // Tăng level
 
-                            // <<< SỬA LỖI 2: KHÔNG GỌI loadLevel NGAY LẬP TỨC >>>
-                            // loadLevel(currentLevel); // <<< XÓA DÒNG NÀY
-                            loadNextLevel = true; // <<< THAY BẰNG DÒNG NÀY
+                            // <<< SỬA LỖI : KHÔNG GỌI loadLevel NGAY LẬP TỨC >>>
+                            penaltyWon = true;
+                            originalBricksBackup.clear();
                         }
                     } else {
                         // --- TRẠNG THÁI GAME THƯỜNG ---
                         if (wasDestroyed) {
                             score += brick.getPoints();
-                            // Kích hoạt Power-up rơi ra
+                            // Kích hoạt Power-up rơi ra, tỉ lệ 20% rơi
                             if (Math.random() < 0.2) {
                                 double puX = brick.getX() + (brick.getWidth() / 2) - 15;
                                 double puY = brick.getY();
@@ -282,7 +304,7 @@ public class GameManager {
 
                                 if (powerUpType < 0.4 && paddle.getWidth() == paddle.getOriginalWidth()) {
                                     powerUps.add(new ExpandPaddlePowerUp(puX, puY));
-                                } else if (powerUpType < 0.8) {
+                                } else if (powerUpType < 0.8 && !paddle.isLaserActive()) {
                                     powerUps.add(new LaserPowerUp(puX, puY));
                                 } else {
                                     powerUps.add(new PenaltyPowerUp(puX, puY));
@@ -292,10 +314,9 @@ public class GameManager {
                     }
                 }
             }
-        } // <<< VÒNG LẶP KẾT THÚC TẠI ĐÂY >>>
+        }
 
-        // <<< SỬA LỖI 2: TẢI LEVEL SAU KHI VÒNG LẶP ĐÃ XONG >>>
-        if (loadNextLevel) {
+        if (penaltyWon) {
             loadLevel(currentLevel); // Tải level mới một cách an toàn
         }
     }
@@ -318,6 +339,7 @@ public class GameManager {
             currentLevel++; // Tăng level
             System.out.println("Level Clear! Loading Level " + currentLevel);
             loadLevel(currentLevel); // Tải level mới
+            originalBricksBackup.clear();
         }
     }
 

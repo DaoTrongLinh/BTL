@@ -30,7 +30,7 @@ public class PenaltyPowerUp extends PowerUp {
      */
     @Override
     public void applyEffect(GameManager manager) {
-        manager.activatePenaltyMode();
+        manager.setPenaltyModePending();
     }
 
     @Override
