@@ -37,11 +37,13 @@ public class GameManager {
     private boolean activatePenaltyModePending = false;
 
     private AudioManager audioManager; // Thêm biến để lưu AudioManager
+    // Trạng thái trước khi dừng
+    private String stateBeforePause;
 
     // Trạng thái game
     private int score;
     private int lives;
-    private String gameState; // "PLAYING", "GAME_OVER", "WIN", "READY", "PENALTY_READY", "PENALTY_PLAYING"
+    private String gameState; // "PLAYING", "GAME_OVER", "WIN", "READY", "PENALTY_READY", "PENALTY_PLAYING", "PAUSED"
 
     public GameManager(AudioManager audioManager) { // <-- Nhận AudioManager
         this.bricks = new ArrayList<>();
@@ -54,6 +56,21 @@ public class GameManager {
         this.levelLoader = new Level();
 
         startGame();
+    }
+    /**
+     * Chuyển đổi giữa trạng thái Dừng (Pause) và Tiếp tục (Resume).
+     */
+    public void togglePause() {
+        if (gameState.equals("PAUSED")) {
+            // Nếu đang Dừng -> Tiếp tục
+            gameState = stateBeforePause; // Trả lại trạng thái cũ (PLAYING hoặc PENALTY_PLAYING)
+            stateBeforePause = null;
+        } else if (gameState.equals("PLAYING") || gameState.equals("PENALTY_PLAYING")) {
+            // Nếu đang Chơi -> Dừng
+            stateBeforePause = gameState; // Lưu lại trạng thái hiện tại
+            gameState = "PAUSED";
+        }
+        // Nếu là READY, GAME_OVER, v.v. thì không làm gì cả
     }
 
     /**
@@ -171,6 +188,9 @@ public class GameManager {
      */
     public void updateGame() {
 
+        if (gameState.equals("PAUSED")) {
+            return;
+        }
         // Phải cập nhật gạch ngay cả khi đang "READY" (cho chế độ penalty)
         if (gameState.equals("PENALTY_READY") || gameState.equals("PENALTY_PLAYING")) {
             for (Brick brick : bricks) {

@@ -128,6 +128,9 @@ public class GameView {
 
             // 7. Vẽ điểm số và mạng sống
             renderGameInfo(manager.getScore(), manager.getLives(), manager.getCurrentLevel());
+            if (gameState.equals("PAUSED")) {
+                renderPausedScreen(); // Gọi hàm vẽ màn hình "STOP"
+            }
         }
     }
 
@@ -254,6 +257,29 @@ public class GameView {
         gc.fillText("Rank( chua co gi )", centerX, btn2Y + 27);
 
         // Reset lại căn lề (quan trọng)
+        gc.setTextAlign(TextAlignment.LEFT);
+    }
+    /**
+     * Vẽ màn hình "STOP" (PAUSED)
+     */
+    private void renderPausedScreen() {
+        // 1. Vẽ một lớp nền mờ (che lên trên game)
+        gc.setFill(new Color(0, 0, 0, 0.5)); // Đen, mờ 50%
+        gc.fillRect(0, 0, width, height);
+
+        // 2. Căn chữ ra giữa
+        gc.setTextAlign(TextAlignment.CENTER);
+
+        // 3. Vẽ chữ "STOP"
+        gc.setFill(Color.WHITE);
+        gc.setFont(new Font("Arial", 60));
+        gc.fillText("STOP", width / 2, height / 2);
+
+        // 4. Vẽ hướng dẫn
+        gc.setFont(new Font("Arial", 18));
+        gc.fillText("Nhấn ESC để tiếp tục", width / 2, height / 2 + 40);
+
+        // 5. Reset lại căn lề
         gc.setTextAlign(TextAlignment.LEFT);
     }
     public Rectangle getEscButtonBounds() {

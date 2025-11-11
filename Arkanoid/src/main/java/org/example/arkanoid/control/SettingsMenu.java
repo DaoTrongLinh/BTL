@@ -1,4 +1,4 @@
-package org.example.arkanoid.main;
+package org.example.arkanoid.control;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

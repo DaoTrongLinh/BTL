@@ -7,8 +7,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.example.arkanoid.control.GameManager;
-import org.example.arkanoid.control.GameView;
+import org.example.arkanoid.control.*;
 
 //Thêm import làm menu
 import javafx.scene.layout.BorderPane;
@@ -17,12 +16,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.input.KeyCode;
 
 //Thêm import làm nhạc
-import org.example.arkanoid.control.AudioManager;
 //Thêm import Menu
-import org.example.arkanoid.control.MainMenuController;
 //Thêm import SettingsMenu
-import org.example.arkanoid.control.SettingsMenuController;
-import org.example.arkanoid.main.SettingsMenu;
 import javafx.scene.shape.Rectangle;
 /**
  * Lớp Application chính của JavaFX.
@@ -146,14 +141,23 @@ public class ArkanoidApp extends Application {
         // Gắn sự kiện input vào Scene cho game
         scene.setOnMouseMoved(event -> {
             if (gameManager != null) {
-                gameManager.movePaddle(event.getX());
+                String state = gameManager.getGameState(); // Kiểm tra trạng thái
+                if (state.equals("PLAYING") || state.equals("READY") ||
+                        state.equals("PENALTY_PLAYING") || state.equals("PENALTY_READY")) {
+                    gameManager.movePaddle(event.getX());
+                }
             }
         });
 
         // <<< SỬA LỖI 2 (CHÍNH): THÊM SỰ KIỆN NÀY ĐỂ PADDLE KHÔNG BỊ ĐƠ >>>
         scene.setOnMouseDragged(event -> {
             if (gameManager != null) {
-                gameManager.movePaddle(event.getX());
+                String state = gameManager.getGameState();
+                if (state.equals("PLAYING") || state.equals("READY") ||
+                        state.equals("PENALTY_PLAYING") || state.equals("PENALTY_READY")) {
+                    
+                    gameManager.movePaddle(event.getX());
+                }
             }
         });
 
@@ -170,7 +174,10 @@ public class ArkanoidApp extends Application {
             // 2. Logic phím ESC (Quay về Menu)
             else if (event.getCode() == KeyCode.ESCAPE) {
                 String state = gameManager.getGameState();
-                if (state.equals("GAME_OVER") || state.equals("WIN")) {
+                if (state.equals("PLAYING") || state.equals("PENALTY_PLAYING") || state.equals("PAUSED")) {
+                    gameManager.togglePause();
+                }
+                else if (state.equals("GAME_OVER") || state.equals("WIN")) {
                     gameLoop.stop();
                     if (audioManager != null) {
                         audioManager.stopBackgroundMusic();
@@ -184,6 +191,10 @@ public class ArkanoidApp extends Application {
         scene.setOnMouseClicked(event -> {
             if (gameManager == null) return;
 
+            // Không cho phép click khi game đang dừng
+            if (gameManager.getGameState().equals("PAUSED")) {
+                return;
+            }
             // Lấy trạng thái game hiện tại
             String state = gameManager.getGameState();
 
