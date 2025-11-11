@@ -1,12 +1,27 @@
 package org.example.arkanoid.object;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public class Paddle extends MovableObject {
 
     private double originalWidth; // Lưu chiều rộng ban đầu để reset power-up
     private boolean laserActive = false; // Biến cờ để kiểm tra trạng thái bắn
+    private static Image PADDLE_NORMAL_IMAGE;
+    private static Image PADDLE_LASER_IMAGE; // Ảnh khi có laser
+    static {
+        try {
+            // Tải ảnh paddle thường
+            PADDLE_NORMAL_IMAGE = new Image(Paddle.class.getResourceAsStream("/Image/Paddle.jpg"));
+
+            // Tải ảnh paddle khi có laser
+            PADDLE_LASER_IMAGE = new Image(Paddle.class.getResourceAsStream("/Image/PaddleLaser.png"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Không thể tải ảnh Paddle!");
+        }
+    }
 
     public Paddle(double x, double y, double width, double height) {
         // dx và dy ban đầu là 0 vì nó không tự di chuyển
@@ -24,11 +39,14 @@ public class Paddle extends MovableObject {
     @Override
     public void render(GraphicsContext gc) {
         if (laserActive) {
-            gc.setFill(Color.CRIMSON); // Màu đỏ khi có laser
+            if (PADDLE_LASER_IMAGE != null) {
+                gc.drawImage(PADDLE_LASER_IMAGE, x, y, width, height);
+            }
         } else {
-            gc.setFill(Color.BLUE); // Màu bình thường
+            if (PADDLE_NORMAL_IMAGE != null) {
+                gc.drawImage(PADDLE_NORMAL_IMAGE, x, y, width, height);
+            }
         }
-        gc.fillRect(x, y, width, height);
     }
 
     // Các phương thức này sẽ được gọi bởi Power-up

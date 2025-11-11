@@ -1,11 +1,21 @@
 package org.example.arkanoid.object;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public class Ball extends MovableObject {
 
     private double radius;
+    private static Image BALL_IMAGE;
+    static {
+        try {
+            // Tải ảnh "Ball.png" từ thư mục /Image/
+            BALL_IMAGE = new Image(Ball.class.getResourceAsStream("/Image/Ball.png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Không thể tải ảnh Ball.png!");
+        }
+    }
 
     public Ball(double x, double y, double radius, double dx, double dy) {
         // x, y là tâm của quả bóng
@@ -21,9 +31,9 @@ public class Ball extends MovableObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setFill(Color.RED);
-        // fillOval vẽ từ góc trên bên trái
-        gc.fillOval(x, y, width, height);
+        if (BALL_IMAGE != null) {
+            gc.drawImage(BALL_IMAGE, x, y, width, height);
+        }
     }
 
     // Bạn có thể thêm các phương thức khác ở đây (ví dụ: bounce, setSpeed, v.v.)
