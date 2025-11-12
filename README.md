@@ -6,6 +6,11 @@
   -Ball.java ( xử lý logic của bóng)
   -MovableObject
   -CollisionHandler.java( xử lý va chạm)
+  -GameView( render GameManager)
+  -AkanoidApp( fix lỗi PADDLE KHÔNG BỊ ĐƠ ,GỘP 2 HÀM KEYPRESSED LẠI)
+  -GameObject.java
+  -Paddle.java
+  -PowerUpp.java
 * Nguyễn Viết Linh
   -GameManager(Pause game)
   -GameView( Màn hình game over, tùy chọn cuối game, màn hình stop
@@ -21,7 +26,7 @@
   -Level ( Xây dựng các màn chơi và logic chuyển màn chơi)
   -Xây dựng các loại gạch đặc biệt, logic của các loại gạch (Invisible Brick, Strong Brick, Moving Brick)
 
-&nbsp;  -Xây dựng các loại power up ( Expand, Laser, Penalty)
+-Xây dựng các loại power up ( Expand, Laser, Penalty)
 
-&nbsp;  -Thêm logic power up và các loại gạch tại GameManager
+-Thêm logic power up và các loại gạch tại GameManager
 
