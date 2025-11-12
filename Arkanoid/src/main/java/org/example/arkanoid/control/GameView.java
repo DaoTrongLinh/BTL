@@ -254,7 +254,7 @@ public class GameView {
 
         // Vẽ chữ
         gc.setFill(Color.WHITE);
-        gc.fillText("Rank( chua co gi )", centerX, btn2Y + 27);
+        gc.fillText("Save Your Score", centerX, btn2Y + 27);
 
         // Reset lại căn lề (quan trọng)
         gc.setTextAlign(TextAlignment.LEFT);

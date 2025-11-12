@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -40,13 +41,13 @@ public class RankingView {
 
         // --- Khu vực hiển thị bảng xếp hạng ---
         VBox rankingBox = new VBox(10); // Khoảng cách 10px
-        rankingBox.setAlignment(Pos.CENTER);
+        rankingBox.setAlignment(Pos.TOP_CENTER);
         rankingBox.setMaxWidth(400);
 
-        // CSS cho viền trắng chữ trắng
-        rankingBox.setStyle("-fx-border-color: white; -fx-border-width: 2; -fx-padding: 20;");
+        //Làm cho VBox trong suốt
+        rankingBox.setStyle("-fx-background-color: transparent; -fx-padding: 20;");
 
-// 1. Tải điểm từ file bằng RankingManager
+        // 1. Tải điểm từ file bằng RankingManager
         List<ScoreEntry> scores = RankingManager.loadScores();
 
         // 2. Kiểm tra xem danh sách có rỗng không
@@ -67,15 +68,26 @@ public class RankingView {
                 rankingBox.getChildren().add(scoreLabel);
 
                 rank++;
-
-                // Chỉ hiển thị Top 10 cho đỡ dài
-                if (rank > 10) {
-                    break;
-                }
             }
         }
 
-        root.setCenter(rankingBox);
+        //Tạo ScrollPane và bọc VBox vào
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(rankingBox); // Đặt VBox vào trong
+
+        // Cài đặt cho ScrollPane
+        scrollPane.setFitToWidth(true); // Tự động co dãn VBox theo chiều rộng
+        scrollPane.setMaxWidth(400); // Giới hạn chiều rộng của cả khung
+
+        // Đặt viền trắng và nền trong suốt cho ScrollPane
+        scrollPane.setStyle(
+                "-fx-border-color: white; "
+                        + "-fx-border-width: 2; "
+                        + "-fx-background: transparent; " // Nền của ScrollPane
+                        + "-fx-background-color: transparent;" // Nền của khu vực nội dung
+        );
+
+        root.setCenter(scrollPane);
 
         // Nút Quay lại
         Button backButton = new Button("Quay về Menu");

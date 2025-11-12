@@ -1,3 +1,14 @@
 LeMinh,220
 LeMinh2,60
 LeMinh3,245
+Player,30
+LeMinhTest,180
+bruh,40
+D,30
+A,80
+AAAAAAAAAAAAA,190
+T,485
+Omagad,70
+E,70
+P,100
+:D,380

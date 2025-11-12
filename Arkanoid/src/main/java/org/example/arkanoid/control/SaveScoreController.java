@@ -17,7 +17,7 @@ public class SaveScoreController {
      * Được gọi khi bấm nút "Lưu và xem Rank".
      */
     public void handleSaveAndShowRank(String playerName, int score) {
-        // --- Logic lưu điểm ---
+        //Logic lưu điểm
 
         RankingManager.saveScore(playerName, score);
 
