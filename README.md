@@ -12,7 +12,7 @@
 -MainMenu và MainMenuController
 * Lê Nguyễn Quang Minh
 -Vẽ UML
--Image & music
+-Image(màn hình khi thắng, Thua, BackGround) & music
 -Ranking Board
 * Nguyễn Vũ Hồng Phúc
 -Level
