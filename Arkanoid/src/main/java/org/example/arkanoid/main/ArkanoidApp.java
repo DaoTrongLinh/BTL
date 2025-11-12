@@ -15,10 +15,11 @@ import javafx.scene.layout.BorderPane;
 // THÊM IMPORT NÀY
 import javafx.scene.input.KeyCode;
 
-//Thêm import làm nhạc
-//Thêm import Menu
-//Thêm import SettingsMenu
 import javafx.scene.shape.Rectangle;
+
+//import làm rank
+import org.example.arkanoid.control.SaveScoreController;
+import org.example.arkanoid.control.RankingController;
 /**
  * Lớp Application chính của JavaFX.
  * Chịu trách nhiệm thiết lập cửa sổ (Stage), Scene
@@ -225,7 +226,17 @@ public class ArkanoidApp extends Application {
                 }
                 //Kiểm tra click vào nút "Rank"
                 else if (rankBounds != null && rankBounds.contains(mouseX, mouseY)) {
-                    // Hiện tại chưa làm gì, chỉ in ra console
+                    //Dừng game và dừng nhạc
+                    gameLoop.stop();
+                    if(audioManager != null) {
+                        audioManager.stopBackgroundMusic();
+                    }
+                    //Lấy điểm số từ GameManager
+                    int finalScore = gameManager.getScore();
+
+                    // GỌI HÀM MÀN HÌNH 1 (LƯU ĐIỂM)
+                    showSaveScoreScreen(finalScore);
+
                     System.out.println("Nút RANK đã được click!");
                 }
             }
@@ -250,5 +261,45 @@ public class ArkanoidApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    /**
+     * Màn hình 1: Hiển thị màn hình để lưu điểm.
+     */
+    public void showSaveScoreScreen(int finalScore) {
+        // Tạo Controller, truyền ArkanoidApp vào
+        SaveScoreController controller = new SaveScoreController(this);
+
+        // Tạo View, truyền controller và điểm số vào
+        SaveScoreView saveView = new SaveScoreView(controller, finalScore, WIDTH, HEIGHT);
+
+        // Lấy root pane
+        BorderPane saveRoot = saveView.createSaveScoreRoot();
+
+        // Đặt làm gốc của Scene
+        scene.setRoot(saveRoot);
+
+        // Xóa các sự kiện input cũ
+        clearGameInputHandlers();
+    }
+
+    /**
+     * Màn hình 2: Hiển thị bảng xếp hạng.
+     */
+    public void showRankingScreen() {
+        // Tạo Controller
+        RankingController controller = new RankingController(this);
+
+        // Tạo View
+        RankingView rankingView = new RankingView(controller, WIDTH, HEIGHT);
+
+        // Lấy root pane
+        BorderPane rankingRoot = rankingView.createRankingRoot();
+
+        // Đặt làm gốc của Scene
+        scene.setRoot(rankingRoot);
+
+        // Xóa các sự kiện input cũ
+        clearGameInputHandlers();
     }
 }
