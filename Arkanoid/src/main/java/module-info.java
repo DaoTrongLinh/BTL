@@ -11,6 +11,7 @@ module org.example.arkanoid {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires javafx.media;
+    requires annotations;
 
     opens org.example.arkanoid.main to javafx.fxml;
     exports org.example.arkanoid.main;

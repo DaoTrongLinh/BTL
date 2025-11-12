@@ -34,18 +34,15 @@ public class ArkanoidApp extends Application {
     // Các thành phần của game
     private GameManager gameManager;
     private GameView gameView;
-    private GraphicsContext gc;
     private AnimationTimer gameLoop;
 
-    // Các thành phần cốt lõi của JavaFX
-    private Stage primaryStage;
     private Scene scene;
     private AudioManager audioManager;
 
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        // Các thành phần cốt lõi của JavaFX
 
         // Tạo một Pane gốc (BorderPane) và Scene
         //Dùng BorderPane để dễ dàng căn giữa menu
@@ -121,7 +118,7 @@ public class ArkanoidApp extends Application {
         gameRoot.getChildren().add(canvas);
 
         // Lấy GraphicsContext từ Canvas
-        gc = canvas.getGraphicsContext2D();
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
         // Khởi tạo "Bộ não" và "Người vẽ"
         gameManager = new GameManager(audioManager);
@@ -257,10 +254,6 @@ public class ArkanoidApp extends Application {
         scene.setOnMousePressed(null); // <-- Thêm dọn dẹp
         scene.setOnMouseClicked(null);
         scene.setOnKeyPressed(null);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     /**

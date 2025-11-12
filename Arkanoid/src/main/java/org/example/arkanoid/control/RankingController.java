@@ -7,7 +7,7 @@ import org.example.arkanoid.main.ArkanoidApp;
  */
 public class RankingController {
 
-    private ArkanoidApp arkanoidApp;
+    private final ArkanoidApp arkanoidApp;
 
     public RankingController(ArkanoidApp arkanoidApp) {
         this.arkanoidApp = arkanoidApp;
@@ -19,7 +19,4 @@ public class RankingController {
     public void handleBackButton() {
         arkanoidApp.showMainMenu();
     }
-
-    // (Trong tương lai, bạn sẽ thêm hàm loadScores() ở đây
-    // để lấy dữ liệu từ file và truyền cho RankingView)
 }

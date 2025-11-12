@@ -21,9 +21,9 @@ public class GameView {
     private double width;
     private double height;
 
-    private Image backgroundImage; // BIẾN MỚI ĐỂ LƯU ẢNH NỀN
-    private Image gameOverImage; // Biến để lưu ảnh kết thúc
-    private Image winImage; //Biến để lưu ảnh lúc thắng
+    private Image backgroundImage;
+    private Image gameOverImage;
+    private Image winImage;
     private Rectangle escButtonBounds;
     private Rectangle rankButtonBounds;
 
@@ -63,7 +63,6 @@ public class GameView {
      * @param manager GameManager chứa tất cả các đối tượng game.
      */
     public void render(GameManager manager) {
-        // --- THAY ĐỔI CÁCH VẼ NỀN ---
 
         // 1. Lấy trạng thái game (nhờ vào getter ta vừa thêm)
         String gameState = manager.getGameState();
@@ -77,7 +76,6 @@ public class GameView {
             gc.setFill(Color.BLACK);
             gc.fillRect(0, 0, width, height);
         }
-        // --- KẾT THÚC THAY ĐỔI ---
 
         // 3. KIỂM TRA TRẠNG THÁI
         if (gameState.equals("GAME_OVER")) {
@@ -254,7 +252,7 @@ public class GameView {
 
         // Vẽ chữ
         gc.setFill(Color.WHITE);
-        gc.fillText("Save Your Score", centerX, btn2Y + 27);
+        gc.fillText("Save Score", centerX, btn2Y + 27);
 
         // Reset lại căn lề (quan trọng)
         gc.setTextAlign(TextAlignment.LEFT);
@@ -273,7 +271,7 @@ public class GameView {
         // 3. Vẽ chữ "STOP"
         gc.setFill(Color.WHITE);
         gc.setFont(new Font("Arial", 60));
-        gc.fillText("STOP", width / 2, height / 2);
+        gc.fillText("PAUSE", width / 2, height / 2);
 
         // 4. Vẽ hướng dẫn
         gc.setFont(new Font("Arial", 18));

@@ -24,7 +24,7 @@ public class ScoreEntry implements Comparable<ScoreEntry> {
 
     @Override
     public int compareTo(ScoreEntry other) {
-        // Sắp xếp theo thứ tự điểm GIẢM DẦN (từ cao xuống thấp)
+        // Sắp xếp theo thứ tự điểm giảm dần (từ cao xuống thấp)
         return Integer.compare(other.score, this.score);
     }
 }

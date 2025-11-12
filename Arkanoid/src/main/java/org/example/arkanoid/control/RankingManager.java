@@ -55,7 +55,7 @@ public class RankingManager {
                 }
             }
         } catch (FileNotFoundException e) {
-            // Đây không phải là lỗi. File chưa tồn tại (lần chơi đầu tiên).
+            // File chưa tồn tại (lần chơi đầu tiên).
             // Chỉ cần trả về danh sách rỗng.
         } catch (IOException e) {
             System.err.println("Lỗi khi đọc file điểm: " + e.getMessage());

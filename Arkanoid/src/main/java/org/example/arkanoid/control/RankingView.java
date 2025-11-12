@@ -9,9 +9,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
-import org.example.arkanoid.control.RankingManager;
-import org.example.arkanoid.control.ScoreEntry;
+
 /**
  * View cho màn hình Bảng Xếp Hạng.
  */
@@ -72,6 +73,24 @@ public class RankingView {
         }
 
         //Tạo ScrollPane và bọc VBox vào
+        ScrollPane scrollPane = getScrollPane(rankingBox);
+
+        root.setCenter(scrollPane);
+
+        // Nút Quay lại
+        Button backButton = new Button("Quay về Menu");
+        backButton.setPrefSize(150, 40);
+        backButton.setOnAction(event -> controller.handleBackButton());
+
+        BorderPane.setAlignment(backButton, Pos.CENTER);
+        BorderPane.setMargin(backButton, new Insets(0, 0, 40, 0));
+        root.setBottom(backButton);
+
+        return root;
+    }
+
+    @NotNull
+    private static ScrollPane getScrollPane(VBox rankingBox) {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(rankingBox); // Đặt VBox vào trong
 
@@ -86,18 +105,6 @@ public class RankingView {
                         + "-fx-background: transparent; " // Nền của ScrollPane
                         + "-fx-background-color: transparent;" // Nền của khu vực nội dung
         );
-
-        root.setCenter(scrollPane);
-
-        // Nút Quay lại
-        Button backButton = new Button("Quay về Menu");
-        backButton.setPrefSize(150, 40);
-        backButton.setOnAction(event -> controller.handleBackButton());
-
-        BorderPane.setAlignment(backButton, Pos.CENTER);
-        BorderPane.setMargin(backButton, new Insets(0, 0, 40, 0));
-        root.setBottom(backButton);
-
-        return root;
+        return scrollPane;
     }
 }
