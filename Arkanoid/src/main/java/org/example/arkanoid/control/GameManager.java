@@ -316,8 +316,8 @@ public class GameManager {
                         // --- TRẠNG THÁI GAME THƯỜNG ---
                         if (wasDestroyed) {
                             score += brick.getPoints();
-                            // Kích hoạt Power-up rơi ra, tỉ lệ 20% rơi
-                            if (Math.random() < 0.2) {
+                            // Kích hoạt Power-up rơi ra, tỉ lệ 30% rơi
+                            if (Math.random() < 0.3) {
                                 double puX = brick.getX() + (brick.getWidth() / 2) - 15;
                                 double puY = brick.getY();
                                 double powerUpType = Math.random();
@@ -349,7 +349,7 @@ public class GameManager {
 
         boolean allDestroyed = true;
         for (Brick brick : bricks) {
-            if (!brick.isDestroyed()) {
+            if (!brick.isDestroyed() && brick.isVisiblyActive()) {
                 allDestroyed = false;
                 break;
             }

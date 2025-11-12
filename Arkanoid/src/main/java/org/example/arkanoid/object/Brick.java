@@ -47,6 +47,14 @@ public abstract class Brick extends GameObject {
     }
 
     /**
+     * Kiểm tra xem gạch này có được tính vào điều kiện thắng hay không.
+     * Gạch tàng hình (chưa hiện) sẽ trả về false.
+     */
+    public boolean isVisiblyActive() {
+        return true; // Mặc định, tất cả gạch đều được tính
+    }
+
+    /**
      * Lấy số điểm mà viên gạch này mang lại.
      *
      * @return số điểm.

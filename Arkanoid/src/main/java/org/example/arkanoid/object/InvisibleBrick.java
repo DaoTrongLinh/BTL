@@ -61,4 +61,10 @@ public class InvisibleBrick extends Brick {
             }
         }
     }
+
+    @Override
+    public boolean isVisiblyActive() {
+        // Chỉ "active" (tính vào điều kiện thắng) NẾU nó đã bị va chạm ít nhất 1 lần (hits < 3)
+        return (this.hits < 3);
+    }
 }
