@@ -1,22 +1,20 @@
 # BTL
-Đào Trọng Linh
+* Đào Trọng Linh
 -Tạo link github 
 -Tạo structure cho project( cấu trúc files) 
 -Ball.java ( xử lý logic của bóng)
 -MovableObject
 -CollisionHandler.java( xử lý va chạm)
-Nguyễn Viết Linh
+* Nguyễn Viết Linh
 -GameManager
 -GameView
 -ArkanoidApp
 -MainMenu và MainMenuController
-Lê Nguyễn Quang Minh
--GameObject
--Paddle
+* Lê Nguyễn Quang Minh
 -Vẽ UML
 -Image & music
--PowerUp
-Nguyễn Vũ Hồng Phúc
+-Ranking Board
+* Nguyễn Vũ Hồng Phúc
 -Level
 -Brick
 -NormalBrick
