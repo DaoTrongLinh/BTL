@@ -21,7 +21,14 @@
 * Lê Nguyễn Quang Minh
   -Vẽ UML
   -Image(màn hình khi thắng, Thua, BackGround) \& music
+  +GameView
+  +AudioManager
   -Ranking Board
+  + RankingController
+  + RankingManager
+  + SaveScoreController
+  + SaveScoreView
+  + ScoreEntry
 * Nguyễn Vũ Hồng Phúc
   -Level ( Xây dựng các màn chơi và logic chuyển màn chơi)
   -Xây dựng các loại gạch đặc biệt, logic của các loại gạch (Invisible Brick, Strong Brick, Moving Brick)
