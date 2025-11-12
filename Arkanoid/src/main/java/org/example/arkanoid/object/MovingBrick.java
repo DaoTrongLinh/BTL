@@ -15,7 +15,7 @@ public class MovingBrick extends Brick {
     public MovingBrick(double x, double y, double width, double height) {
         // Gọi lớp cha: x, y, width, height
         // hits = 1 (1 lần va chạm để vỡ)
-        // points = 250 (thưởng lớn khi thắng penalty)
+        // points = 250
         super(x, y, width, height, 1, 250);
 
         this.dx = 5.0; // Tốc độ di chuyển của gạch

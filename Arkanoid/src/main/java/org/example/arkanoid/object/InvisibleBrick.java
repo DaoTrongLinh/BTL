@@ -23,8 +23,8 @@ public class InvisibleBrick extends Brick {
     public InvisibleBrick(double x, double y, double width, double height) {
         // Gọi lớp cha (Brick) với:
         // hits = 3 (3 lần va chạm để vỡ)
-        // points = 30
-        super(x, y, width, height, 3, 30);
+        // points = 25
+        super(x, y, width, height, 3, 25);
     }
 
     /**

@@ -200,7 +200,7 @@ public class GameManager {
 
         // Logic mới dựa trên gameState
         if (gameState.equals("PLAYING") || gameState.equals("PENALTY_PLAYING")) {
-            // 1. Cập nhậcollisionHandler.handleBallPaddleCollision(ball, paddle);t vị trí bóng (CHỈ KHI ĐANG CHƠI)
+            // 1. Cập nhật collisionHandler.handleBallPaddleCollision(ball, paddle) vị trí bóng (CHỈ KHI ĐANG CHƠI)
             ball.update();
 
             // 2. Cập nhật Power-ups

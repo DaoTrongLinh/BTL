@@ -25,9 +25,9 @@ public class StrongBrick extends Brick {
 
     public StrongBrick(double x, double y, double width, double height) {
         // Gọi lớp cha (Brick) với:
-        // hits = 2 (2 lần va chạm để vỡ)
-        // points = 25 (nhận 25 điểm khi vỡ)
-        super(x, y, width, height, 2, 25);
+        // hits = 2
+        // points = 20
+        super(x, y, width, height, 2, 20);
     }
 
     @Override

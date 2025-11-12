@@ -33,14 +33,13 @@ public class Level {
 
         int numCols = 0;
 
+        InputStream is = getClass().getResourceAsStream(resourcePath);
+        if (is == null) {
+            // Trả về danh sách rỗng, GameManager sẽ xử lý (hiện màn WIN)
+            return bricks;
+        }
         // --- Đọc file và lưu layout ---
-        try (InputStream is = getClass().getResourceAsStream(resourcePath); BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-
-            if (is == null) {
-                System.err.println("Không thể tìm thấy file level: " + resourcePath);
-                return bricks; // Trả về danh sách rỗng
-            }
-
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) continue; // Bỏ qua dòng trống
@@ -52,7 +51,7 @@ public class Level {
                 levelLayout.add(tokens);
             }
 
-        } catch (IOException | NullPointerException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             // Nếu có lỗi (ví dụ: hết level), trả về danh sách rỗng
             return bricks;
