@@ -6,10 +6,12 @@
 -MovableObject
 -CollisionHandler.java( xử lý va chạm)
 * Nguyễn Viết Linh
--GameManager
--GameView
--ArkanoidApp
+-GameManager(Pause game)
+-GameView( Màn hình game over, tùy chọn cuối game, màn hình stop
+-ArkanoidApp( Hiện thị MainMenu,SettingMenu,StarGameScene)
 -MainMenu và MainMenuController
+-SettingMenu và SettingMenuController
+-Lấy image cho Ball vs Paddle
 * Lê Nguyễn Quang Minh
 -Vẽ UML
 -Image(màn hình khi thắng, Thua, BackGround) & music
