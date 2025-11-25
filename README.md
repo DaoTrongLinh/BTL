@@ -1,6 +1,6 @@
 # BTL
 
-* Đào Trọng Linh
+* Đào Trọng Linh 28%
   -Tạo link github
   -Tạo structure cho project( cấu trúc files)
   -Ball.java ( xử lý logic của bóng)
@@ -11,14 +11,14 @@
   -GameObject.java
   -Paddle.java
   -PowerUpp.java
-* Nguyễn Viết Linh
+* Nguyễn Viết Linh 24%
   -GameManager(Pause game)
   -GameView( Màn hình game over, tùy chọn cuối game, màn hình stop
   -ArkanoidApp( Hiện thị MainMenu,SettingMenu,StarGameScene)
   -MainMenu và MainMenuController
   -SettingMenu và SettingMenuController
   -Lấy image cho Ball vs Paddle
-* Lê Nguyễn Quang Minh
+* Lê Nguyễn Quang Minh 24%
   -Vẽ UML
   -Image(màn hình khi thắng, Thua, BackGround) \& music
   +GameView
@@ -29,7 +29,7 @@
   + SaveScoreController
   + SaveScoreView
   + ScoreEntry
-* Nguyễn Vũ Hồng Phúc
+* Nguyễn Vũ Hồng Phúc 24%
   -Level ( Xây dựng các màn chơi và logic chuyển màn chơi)
   -Xây dựng các loại gạch đặc biệt, logic của các loại gạch (Invisible Brick, Strong Brick, Moving Brick)
 
